@@ -57,7 +57,12 @@ export interface Lancamento {
   fat_anexo_iv: number;
   fat_anexo_v: number;
   folha: number;
+  isento_icms?: number | null;
+  isento_iss?: number | null;
+  isento_pis_cofins?: number | null;
+  isento_ipi?: number | null;
 }
+
 
 export interface SementeMes {
   ano: number;
@@ -77,14 +82,34 @@ export interface Tributos {
   ipi: number;
 }
 
+export interface DetalheIcmsPr {
+  aliquotaAntes: number;
+  percentualReducao: number;
+  aliquotaDepois: number;
+}
+
+export interface Isencoes {
+  icms: number;
+  iss: number;
+  pis_cofins: number;
+  ipi: number;
+}
+
 export interface DetalheAnexo {
   anexo: AnexoKey;
   anexoAplicado: string;
   faturamento: number;
   faixa: number | null;
   aliquotaEfetiva: number;
+  /** Alíquotas por tributo (%) já aplicadas as reduções. */
+  aliquotas: Tributos;
+  /** Base de cálculo por tributo (faturamento menos isenção alocada). */
+  bases: Tributos;
+  /** Isenção alocada a este anexo por tributo. */
+  isencoes: Tributos;
   tributos: Tributos;
   total: number;
+  icmsPr?: DetalheIcmsPr;
   erro?: string;
 }
 
@@ -98,7 +123,9 @@ export interface ResultadoMes {
   folha12: number;
   fatorR: number;
   fatorRAtingido: boolean;
+  isencoes: Isencoes;
   anexos: DetalheAnexo[];
+
   simplesTributos: Tributos;
   simplesTotal: number;
   simplesAliquota: number;
@@ -162,6 +189,29 @@ function acharFaixa(faixas: FaixaSimples[], anexo: string, rbt12: number) {
     ) ?? null
   );
 }
+
+/**
+ * Aloca um valor isento em cascata pelos anexos informados, na ordem dada,
+ * limitado ao faturamento de cada anexo.
+ */
+function alocarIsencao(
+  valor: number,
+  ordem: AnexoKey[],
+  faturamentos: Record<AnexoKey, number>,
+): { porAnexo: Record<AnexoKey, number>; total: number } {
+  const porAnexo: Record<AnexoKey, number> = { I: 0, II: 0, III: 0, IV: 0, V: 0 };
+  let restante = Math.max(0, num(valor));
+  let total = 0;
+  for (const a of ordem) {
+    if (restante <= 0) break;
+    const aplicado = Math.min(restante, Math.max(0, faturamentos[a]));
+    porAnexo[a] = aplicado;
+    restante -= aplicado;
+    total += aplicado;
+  }
+  return { porAnexo, total };
+}
+
 
 function reducaoIcmsPr(tabela: FaixaIcmsPr[], tipo: "comercio" | "industria", rbt12: number) {
   const f = tabela.find(
@@ -262,6 +312,28 @@ export function calcularApuracao(input: {
     const fatorR = rbt12 > 0 ? folha12 / rbt12 : 0;
     const fatorRAtingido = fatorR >= 0.28;
 
+    const isencoes: Isencoes = {
+      icms: num(l.isento_icms),
+      iss: num(l.isento_iss),
+      pis_cofins: num(l.isento_pis_cofins),
+      ipi: num(l.isento_ipi),
+    };
+
+    // Alocação em cascata das isenções pelos anexos que geram cada tributo.
+    const alocIcms = alocarIsencao(isencoes.icms, ["I", "II"], faturamentos);
+    const alocIss = alocarIsencao(isencoes.iss, ["III", "IV", "V"], faturamentos);
+    const alocPisCofins = alocarIsencao(isencoes.pis_cofins, ["I", "II", "III", "IV", "V"], faturamentos);
+    const alocIpi = alocarIsencao(isencoes.ipi, ["II"], faturamentos);
+
+    if (isencoes.icms > alocIcms.total)
+      avisos.push("Isenção de ICMS maior que a receita dos Anexos I e II — excedente ignorado.");
+    if (isencoes.iss > alocIss.total)
+      avisos.push("Isenção de ISS maior que a receita dos Anexos III, IV e V — excedente ignorado.");
+    if (isencoes.pis_cofins > alocPisCofins.total)
+      avisos.push("Isenção de PIS/COFINS maior que o faturamento do mês — excedente ignorado.");
+    if (isencoes.ipi > alocIpi.total)
+      avisos.push("Isenção de IPI maior que a receita do Anexo II — excedente ignorado.");
+
     const detalhes: DetalheAnexo[] = [];
     const totalTributos = zeroTributos();
 
@@ -271,6 +343,19 @@ export function calcularApuracao(input: {
       const anexoAplicado = anexo === "V" && fatorRAtingido ? "III" : anexo;
       const faixa = acharFaixa(tabelaSimples, anexoAplicado, rbt12);
 
+      const isencaoAnexo: Tributos = {
+        ...zeroTributos(),
+        icms: alocIcms.porAnexo[anexo],
+        iss: alocIss.porAnexo[anexo],
+        cofins: alocPisCofins.porAnexo[anexo],
+        pis: alocPisCofins.porAnexo[anexo],
+        ipi: alocIpi.porAnexo[anexo],
+      };
+      const bases = {} as Tributos;
+      (Object.keys(isencaoAnexo) as (keyof Tributos)[]).forEach((k) => {
+        bases[k] = Math.max(0, faturamento - isencaoAnexo[k]);
+      });
+
       if (!faixa || rbt12 <= 0) {
         detalhes.push({
           anexo,
@@ -278,6 +363,9 @@ export function calcularApuracao(input: {
           faturamento,
           faixa: null,
           aliquotaEfetiva: 0,
+          aliquotas: zeroTributos(),
+          bases,
+          isencoes: isencaoAnexo,
           tributos: zeroTributos(),
           total: 0,
           erro: !faixa
@@ -293,22 +381,23 @@ export function calcularApuracao(input: {
 
       const aliquotas = repartir(faixa, aliquotaEfetiva);
 
+      let icmsPr: DetalheIcmsPr | undefined;
       if (anexoAplicado === "I" || anexoAplicado === "II") {
         const tipo = anexoAplicado === "I" ? "comercio" : "industria";
         const reducao = reducaoIcmsPr(tabelaIcmsPr, tipo, rbt12);
-        aliquotas.icms = aliquotas.icms * (1 - reducao / 100);
+        const antes = aliquotas.icms;
+        aliquotas.icms = antes * (1 - reducao / 100);
+        icmsPr = {
+          aliquotaAntes: antes,
+          percentualReducao: reducao,
+          aliquotaDepois: aliquotas.icms,
+        };
       }
 
-      const tributos: Tributos = {
-        irpj: (faturamento * aliquotas.irpj) / 100,
-        csll: (faturamento * aliquotas.csll) / 100,
-        cofins: (faturamento * aliquotas.cofins) / 100,
-        pis: (faturamento * aliquotas.pis) / 100,
-        cpp: (faturamento * aliquotas.cpp) / 100,
-        icms: (faturamento * aliquotas.icms) / 100,
-        iss: (faturamento * aliquotas.iss) / 100,
-        ipi: (faturamento * aliquotas.ipi) / 100,
-      };
+      const tributos = {} as Tributos;
+      (Object.keys(aliquotas) as (keyof Tributos)[]).forEach((k) => {
+        tributos[k] = (bases[k] * aliquotas[k]) / 100;
+      });
       const total = Object.values(tributos).reduce((a, b) => a + b, 0);
 
       (Object.keys(totalTributos) as (keyof Tributos)[]).forEach((k) => {
@@ -321,10 +410,15 @@ export function calcularApuracao(input: {
         faturamento,
         faixa: faixa.faixa,
         aliquotaEfetiva,
+        aliquotas,
+        bases,
+        isencoes: isencaoAnexo,
         tributos,
         total,
+        ...(icmsPr ? { icmsPr } : {}),
       });
     });
+
 
     const simplesTotal = Object.values(totalTributos).reduce((a, b) => a + b, 0);
 
@@ -359,7 +453,9 @@ export function calcularApuracao(input: {
       folha12,
       fatorR,
       fatorRAtingido,
+      isencoes,
       anexos: detalhes,
+
       simplesTributos: totalTributos,
       simplesTotal,
       simplesAliquota: faturamentoTotal > 0 ? (simplesTotal / faturamentoTotal) * 100 : 0,

@@ -129,6 +129,10 @@ export type Database = {
           fat_anexo_v: number
           folha: number
           id: string
+          isento_icms: number
+          isento_ipi: number
+          isento_iss: number
+          isento_pis_cofins: number
           mes: number
           updated_at: string
         }
@@ -143,6 +147,10 @@ export type Database = {
           fat_anexo_v?: number
           folha?: number
           id?: string
+          isento_icms?: number
+          isento_ipi?: number
+          isento_iss?: number
+          isento_pis_cofins?: number
           mes: number
           updated_at?: string
         }
@@ -157,6 +165,10 @@ export type Database = {
           fat_anexo_v?: number
           folha?: number
           id?: string
+          isento_icms?: number
+          isento_ipi?: number
+          isento_iss?: number
+          isento_pis_cofins?: number
           mes?: number
           updated_at?: string
         }

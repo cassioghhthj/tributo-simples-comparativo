@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -30,6 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { MemoriaCalculo } from "@/components/MemoriaCalculo";
 import { MESES, brl, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
@@ -59,8 +61,20 @@ const CAMPOS = [
   { key: "fat_anexo_v", label: "Anexo V — Serviço" },
 ] as const;
 
+const ISENCOES = [
+  { key: "isento_icms", label: "Receita isenta de ICMS", nota: "Abate a base dos Anexos I e II" },
+  { key: "isento_iss", label: "Receita isenta de ISS", nota: "Abate a base dos Anexos III, IV e V" },
+  {
+    key: "isento_pis_cofins",
+    label: "Receita isenta de PIS/COFINS",
+    nota: "Abate a base de todos os anexos",
+  },
+  { key: "isento_ipi", label: "Receita isenta de IPI", nota: "Abate a base do Anexo II" },
+] as const;
+
 type CampoKey = (typeof CAMPOS)[number]["key"];
-type Form = Record<CampoKey | "folha", string>;
+type IsencaoKey = (typeof ISENCOES)[number]["key"];
+type Form = Record<CampoKey | IsencaoKey | "folha", string>;
 
 const formVazio: Form = {
   fat_anexo_i: "",
@@ -69,7 +83,12 @@ const formVazio: Form = {
   fat_anexo_iv: "",
   fat_anexo_v: "",
   folha: "",
+  isento_icms: "",
+  isento_iss: "",
+  isento_pis_cofins: "",
+  isento_ipi: "",
 };
+
 
 function ApuracaoPagina() {
   const { id } = Route.useParams();
@@ -113,6 +132,8 @@ function ApuracaoPagina() {
 
   const [comp, setComp] = useState<{ ano: string; mes: string } | null>(null);
   const [form, setForm] = useState<Form>(formVazio);
+  const [isencoesAbertas, setIsencoesAbertas] = useState(false);
+  const [expandido, setExpandido] = useState<string | null>(null);
 
   const compAtual = comp ?? { ano: String(proxima.ano), mes: String(proxima.mes) };
 
@@ -148,6 +169,7 @@ function ApuracaoPagina() {
   }, [base.data, compAtual.ano, compAtual.mes]);
 
   const totalDigitado = CAMPOS.reduce((acc, c) => acc + (Number(form[c.key]) || 0), 0);
+  const totalIsencoes = ISENCOES.reduce((acc, c) => acc + (Number(form[c.key]) || 0), 0);
 
   const salvar = useMutation({
     mutationFn: async () => {
@@ -162,6 +184,11 @@ function ApuracaoPagina() {
           fat_anexo_iv: Number(form.fat_anexo_iv) || 0,
           fat_anexo_v: Number(form.fat_anexo_v) || 0,
           folha: Number(form.folha) || 0,
+          isento_icms: Number(form.isento_icms) || 0,
+          isento_iss: Number(form.isento_iss) || 0,
+          isento_pis_cofins: Number(form.isento_pis_cofins) || 0,
+          isento_ipi: Number(form.isento_ipi) || 0,
+
         },
         { onConflict: "apuracao_id,ano,mes" },
       );
@@ -318,6 +345,42 @@ function ApuracaoPagina() {
                   />
                 </div>
               </div>
+
+              <Collapsible open={isencoesAbertas} onOpenChange={setIsencoesAbertas}>
+                <CollapsibleTrigger asChild>
+                  <Button type="button" variant="ghost" size="sm" className="px-0">
+                    {isencoesAbertas ? "▾" : "▸"} Isenções (opcional)
+                    {totalIsencoes > 0 && (
+                      <span className="num ml-2 text-muted-foreground">{brl(totalIsencoes)}</span>
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-3">
+                  <p className="mb-3 text-sm text-muted-foreground">
+                    Parcela da receita do mês isenta de cada tributo dentro do Simples Nacional
+                    (substituição tributária, monofásico, exportação etc.). A base de cálculo do tributo é
+                    reduzida no valor informado, nunca abaixo de zero.
+                  </p>
+                  <div className="grid gap-4 md:grid-cols-4">
+                    {ISENCOES.map((c) => (
+                      <div key={c.key} className="space-y-2">
+                        <Label htmlFor={c.key}>{c.label}</Label>
+                        <Input
+                          id={c.key}
+                          type="number"
+                          step="0.01"
+                          className="num"
+                          value={form[c.key]}
+                          onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                        />
+                        <p className="text-xs text-muted-foreground">{c.nota}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+
 
               <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                 <p className="text-sm text-muted-foreground">
@@ -505,36 +568,59 @@ function ApuracaoPagina() {
                       <th className="px-3 py-2 text-right font-medium">Alíq. SN</th>
                       <th className="px-3 py-2 text-right font-medium">Presumido</th>
                       <th className="px-3 py-2 text-right font-medium">Alíq. LP</th>
-                      <th className="px-6 py-2 text-right font-medium">Diferença</th>
+                      <th className="px-3 py-2 text-right font-medium">Diferença</th>
+                      <th className="px-6 py-2 text-right font-medium">Memória</th>
                     </tr>
                   </thead>
                   <tbody className="num">
                     {resultados.map((r) => (
-                      <tr key={r.competencia} className="border-b border-border/60">
-                        <td className="px-6 py-2">{r.competencia}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
-                        <td
-                          className={`px-6 py-2 text-right font-medium ${
-                            r.economia >= 0 ? "text-success" : "text-destructive"
-                          }`}
-                        >
-                          {brl(r.economia)}
-                        </td>
-                      </tr>
+                      <Fragment key={r.competencia}>
+                        <tr className="border-b border-border/60">
+                          <td className="px-6 py-2">{r.competencia}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
+                          <td
+                            className={`px-3 py-2 text-right font-medium ${
+                              r.economia >= 0 ? "text-success" : "text-destructive"
+                            }`}
+                          >
+                            {brl(r.economia)}
+                          </td>
+                          <td className="px-6 py-2 text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              aria-expanded={expandido === r.competencia}
+                              onClick={() =>
+                                setExpandido(expandido === r.competencia ? null : r.competencia)
+                              }
+                            >
+                              {expandido === r.competencia ? "Ocultar" : "Detalhar"}
+                            </Button>
+                          </td>
+                        </tr>
+                        {expandido === r.competencia && (
+                          <tr className="border-b border-border/60">
+                            <td colSpan={10} className="p-0">
+                              <MemoriaCalculo r={r} />
+                            </td>
+                          </tr>
+                        )}
+                      </Fragment>
                     ))}
                     {resultados.length === 0 && (
                       <tr>
-                        <td colSpan={9} className="px-6 py-6 text-muted-foreground">
+                        <td colSpan={10} className="px-6 py-6 text-muted-foreground">
                           Sem dados calculados.
                         </td>
                       </tr>
                     )}
+
                   </tbody>
                   {resultados.length > 0 && (
                     <tfoot>
@@ -558,9 +644,10 @@ function ApuracaoPagina() {
                               : 0,
                           )}
                         </td>
-                        <td className="px-6 py-3 text-right">
+                        <td className="px-3 py-3 text-right">
                           {brl(acumulado.presumido - acumulado.simples)}
                         </td>
+                        <td className="px-6 py-3" />
                       </tr>
                     </tfoot>
                   )}
