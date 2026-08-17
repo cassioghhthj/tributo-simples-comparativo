@@ -82,14 +82,34 @@ export interface Tributos {
   ipi: number;
 }
 
+export interface DetalheIcmsPr {
+  aliquotaAntes: number;
+  percentualReducao: number;
+  aliquotaDepois: number;
+}
+
+export interface Isencoes {
+  icms: number;
+  iss: number;
+  pis_cofins: number;
+  ipi: number;
+}
+
 export interface DetalheAnexo {
   anexo: AnexoKey;
   anexoAplicado: string;
   faturamento: number;
   faixa: number | null;
   aliquotaEfetiva: number;
+  /** Alíquotas por tributo (%) já aplicadas as reduções. */
+  aliquotas: Tributos;
+  /** Base de cálculo por tributo (faturamento menos isenção alocada). */
+  bases: Tributos;
+  /** Isenção alocada a este anexo por tributo. */
+  isencoes: Tributos;
   tributos: Tributos;
   total: number;
+  icmsPr?: DetalheIcmsPr;
   erro?: string;
 }
 
@@ -103,7 +123,9 @@ export interface ResultadoMes {
   folha12: number;
   fatorR: number;
   fatorRAtingido: boolean;
+  isencoes: Isencoes;
   anexos: DetalheAnexo[];
+
   simplesTributos: Tributos;
   simplesTotal: number;
   simplesAliquota: number;
