@@ -179,6 +179,11 @@ function ApuracaoPagina() {
           fat_anexo_iv: Number(form.fat_anexo_iv) || 0,
           fat_anexo_v: Number(form.fat_anexo_v) || 0,
           folha: Number(form.folha) || 0,
+          isento_icms: Number(form.isento_icms) || 0,
+          isento_iss: Number(form.isento_iss) || 0,
+          isento_pis_cofins: Number(form.isento_pis_cofins) || 0,
+          isento_ipi: Number(form.isento_ipi) || 0,
+
         },
         { onConflict: "apuracao_id,ano,mes" },
       );
