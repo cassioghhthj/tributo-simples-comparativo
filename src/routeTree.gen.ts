@@ -9,39 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedApuracoesIdRouteImport } from './routes/_authenticated/apuracoes.$id'
 import { Route as AuthenticatedApuracoesNovaRouteImport } from './routes/_authenticated/apuracoes.nova'
 import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
 import { Route as AuthenticatedEmpresasNovaRouteImport } from './routes/_authenticated/empresas.nova'
 
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedApuracoesIdRoute =
   AuthenticatedApuracoesIdRouteImport.update({
-    id: '/_authenticated/apuracoes/$id',
+    id: '/apuracoes/$id',
     path: '/apuracoes/$id',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedApuracoesNovaRoute =
   AuthenticatedApuracoesNovaRouteImport.update({
-    id: '/_authenticated/apuracoes/nova',
+    id: '/apuracoes/nova',
     path: '/apuracoes/nova',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedEmpresasIdRoute = AuthenticatedEmpresasIdRouteImport.update({
-  id: '/_authenticated/empresas/$id',
+  id: '/empresas/$id',
   path: '/empresas/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedEmpresasNovaRoute =
   AuthenticatedEmpresasNovaRouteImport.update({
-    id: '/_authenticated/empresas/nova',
+    id: '/empresas/nova',
     path: '/empresas/nova',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -60,6 +65,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
   '/_authenticated/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
@@ -83,6 +89,7 @@ export interface FileRouteTypes {
     | '/empresas/nova'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/_authenticated/'
     | '/_authenticated/apuracoes/$id'
     | '/_authenticated/apuracoes/nova'
@@ -91,6 +98,57 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/apuracoes/$id': {
+      id: '/_authenticated/apuracoes/$id'
+      path: '/apuracoes/$id'
+      fullPath: '/apuracoes/$id'
+      preLoaderRoute: typeof AuthenticatedApuracoesIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/apuracoes/nova': {
+      id: '/_authenticated/apuracoes/nova'
+      path: '/apuracoes/nova'
+      fullPath: '/apuracoes/nova'
+      preLoaderRoute: typeof AuthenticatedApuracoesNovaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/empresas/$id': {
+      id: '/_authenticated/empresas/$id'
+      path: '/empresas/$id'
+      fullPath: '/empresas/$id'
+      preLoaderRoute: typeof AuthenticatedEmpresasIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/empresas/nova': {
+      id: '/_authenticated/empresas/nova'
+      path: '/empresas/nova'
+      fullPath: '/empresas/nova'
+      preLoaderRoute: typeof AuthenticatedEmpresasNovaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+  }
+}
+
+interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedApuracoesIdRoute: typeof AuthenticatedApuracoesIdRoute
   AuthenticatedApuracoesNovaRoute: typeof AuthenticatedApuracoesNovaRoute
@@ -98,52 +156,19 @@ export interface RootRouteChildren {
   AuthenticatedEmpresasNovaRoute: typeof AuthenticatedEmpresasNovaRoute
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_authenticated/': {
-      id: '/_authenticated/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/apuracoes/$id': {
-      id: '/_authenticated/apuracoes/$id'
-      path: '/apuracoes/$id'
-      fullPath: '/apuracoes/$id'
-      preLoaderRoute: typeof AuthenticatedApuracoesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/apuracoes/nova': {
-      id: '/_authenticated/apuracoes/nova'
-      path: '/apuracoes/nova'
-      fullPath: '/apuracoes/nova'
-      preLoaderRoute: typeof AuthenticatedApuracoesNovaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/empresas/$id': {
-      id: '/_authenticated/empresas/$id'
-      path: '/empresas/$id'
-      fullPath: '/empresas/$id'
-      preLoaderRoute: typeof AuthenticatedEmpresasIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/empresas/nova': {
-      id: '/_authenticated/empresas/nova'
-      path: '/empresas/nova'
-      fullPath: '/empresas/nova'
-      preLoaderRoute: typeof AuthenticatedEmpresasNovaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
-}
-
-const rootRouteChildren: RootRouteChildren = {
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedApuracoesIdRoute: AuthenticatedApuracoesIdRoute,
   AuthenticatedApuracoesNovaRoute: AuthenticatedApuracoesNovaRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasNovaRoute: AuthenticatedEmpresasNovaRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
