@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApuracoesIdRouteImport } from './routes/apuracoes.$id'
+import { Route as ApuracoesNovaRouteImport } from './routes/apuracoes.nova'
+import { Route as EmpresasIdRouteImport } from './routes/empresas.$id'
+import { Route as EmpresasNovaRouteImport } from './routes/empresas.nova'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApuracoesIdRoute = ApuracoesIdRouteImport.update({
+  id: '/apuracoes/$id',
+  path: '/apuracoes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApuracoesNovaRoute = ApuracoesNovaRouteImport.update({
+  id: '/apuracoes/nova',
+  path: '/apuracoes/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresasIdRoute = EmpresasIdRouteImport.update({
+  id: '/empresas/$id',
+  path: '/empresas/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresasNovaRoute = EmpresasNovaRouteImport.update({
+  id: '/empresas/nova',
+  path: '/empresas/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apuracoes/$id': typeof ApuracoesIdRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
+  '/empresas/$id': typeof EmpresasIdRoute
+  '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apuracoes/$id': typeof ApuracoesIdRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
+  '/empresas/$id': typeof EmpresasIdRoute
+  '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apuracoes/$id': typeof ApuracoesIdRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
+  '/empresas/$id': typeof EmpresasIdRoute
+  '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/apuracoes/$id'
+    | '/apuracoes/nova'
+    | '/empresas/$id'
+    | '/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/apuracoes/$id'
+    | '/apuracoes/nova'
+    | '/empresas/$id'
+    | '/empresas/nova'
+  id:
+    | '__root__'
+    | '/'
+    | '/apuracoes/$id'
+    | '/apuracoes/nova'
+    | '/empresas/$id'
+    | '/empresas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApuracoesIdRoute: typeof ApuracoesIdRoute
+  ApuracoesNovaRoute: typeof ApuracoesNovaRoute
+  EmpresasIdRoute: typeof EmpresasIdRoute
+  EmpresasNovaRoute: typeof EmpresasNovaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/apuracoes/$id': {
+      id: '/apuracoes/$id'
+      path: '/apuracoes/$id'
+      fullPath: '/apuracoes/$id'
+      preLoaderRoute: typeof ApuracoesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apuracoes/nova': {
+      id: '/apuracoes/nova'
+      path: '/apuracoes/nova'
+      fullPath: '/apuracoes/nova'
+      preLoaderRoute: typeof ApuracoesNovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresas/$id': {
+      id: '/empresas/$id'
+      path: '/empresas/$id'
+      fullPath: '/empresas/$id'
+      preLoaderRoute: typeof EmpresasIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresas/nova': {
+      id: '/empresas/nova'
+      path: '/empresas/nova'
+      fullPath: '/empresas/nova'
+      preLoaderRoute: typeof EmpresasNovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApuracoesIdRoute: ApuracoesIdRoute,
+  ApuracoesNovaRoute: ApuracoesNovaRoute,
+  EmpresasIdRoute: EmpresasIdRoute,
+  EmpresasNovaRoute: EmpresasNovaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

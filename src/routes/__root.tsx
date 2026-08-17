@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { Toaster } from "@/components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -77,23 +78,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Martins & Ferri — Simulador Tributário" },
+      {
+        name: "description",
+        content:
+          "Sistema de simulação e comparativo de carga tributária entre Simples Nacional e Lucro Presumido.",
+      },
+      { name: "author", content: "Martins & Ferri Contabilidade" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap",
+      },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -119,8 +128,48 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="min-h-screen bg-background">
+        <header className="border-b border-border bg-sidebar text-sidebar-foreground">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+            <Link to="/" className="flex items-baseline gap-3">
+              <span className="font-serif text-xl font-semibold tracking-tight">Martins &amp; Ferri</span>
+              <span className="text-xs uppercase tracking-[0.18em] text-sidebar-foreground/60">
+                Simulador Tributário
+              </span>
+            </Link>
+            <nav className="flex items-center gap-1 text-sm">
+              <Link
+                to="/"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+                activeOptions={{ exact: true }}
+              >
+                Empresas
+              </Link>
+              <Link
+                to="/apuracoes/nova"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+              >
+                Nova apuração
+              </Link>
+              <Link
+                to="/empresas/nova"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+              >
+                Nova empresa
+              </Link>
+            </nav>
+          </div>
+        </header>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <main className="mx-auto max-w-7xl px-6 py-8">
+          <Outlet />
+        </main>
+      </div>
+      <Toaster richColors position="top-right" />
     </QueryClientProvider>
   );
 }
+
