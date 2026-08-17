@@ -568,36 +568,59 @@ function ApuracaoPagina() {
                       <th className="px-3 py-2 text-right font-medium">Alíq. SN</th>
                       <th className="px-3 py-2 text-right font-medium">Presumido</th>
                       <th className="px-3 py-2 text-right font-medium">Alíq. LP</th>
-                      <th className="px-6 py-2 text-right font-medium">Diferença</th>
+                      <th className="px-3 py-2 text-right font-medium">Diferença</th>
+                      <th className="px-6 py-2 text-right font-medium">Memória</th>
                     </tr>
                   </thead>
                   <tbody className="num">
                     {resultados.map((r) => (
-                      <tr key={r.competencia} className="border-b border-border/60">
-                        <td className="px-6 py-2">{r.competencia}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
-                        <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
-                        <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
-                        <td
-                          className={`px-6 py-2 text-right font-medium ${
-                            r.economia >= 0 ? "text-success" : "text-destructive"
-                          }`}
-                        >
-                          {brl(r.economia)}
-                        </td>
-                      </tr>
+                      <>
+                        <tr key={r.competencia} className="border-b border-border/60">
+                          <td className="px-6 py-2">{r.competencia}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
+                          <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
+                          <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
+                          <td
+                            className={`px-3 py-2 text-right font-medium ${
+                              r.economia >= 0 ? "text-success" : "text-destructive"
+                            }`}
+                          >
+                            {brl(r.economia)}
+                          </td>
+                          <td className="px-6 py-2 text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              aria-expanded={expandido === r.competencia}
+                              onClick={() =>
+                                setExpandido(expandido === r.competencia ? null : r.competencia)
+                              }
+                            >
+                              {expandido === r.competencia ? "Ocultar" : "Detalhar"}
+                            </Button>
+                          </td>
+                        </tr>
+                        {expandido === r.competencia && (
+                          <tr key={`${r.competencia}-memoria`} className="border-b border-border/60">
+                            <td colSpan={10} className="p-0">
+                              <MemoriaCalculo r={r} />
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     ))}
                     {resultados.length === 0 && (
                       <tr>
-                        <td colSpan={9} className="px-6 py-6 text-muted-foreground">
+                        <td colSpan={10} className="px-6 py-6 text-muted-foreground">
                           Sem dados calculados.
                         </td>
                       </tr>
                     )}
+
                   </tbody>
                   {resultados.length > 0 && (
                     <tfoot>
