@@ -59,8 +59,20 @@ const CAMPOS = [
   { key: "fat_anexo_v", label: "Anexo V — Serviço" },
 ] as const;
 
+const ISENCOES = [
+  { key: "isento_icms", label: "Receita isenta de ICMS", nota: "Abate a base dos Anexos I e II" },
+  { key: "isento_iss", label: "Receita isenta de ISS", nota: "Abate a base dos Anexos III, IV e V" },
+  {
+    key: "isento_pis_cofins",
+    label: "Receita isenta de PIS/COFINS",
+    nota: "Abate a base de todos os anexos",
+  },
+  { key: "isento_ipi", label: "Receita isenta de IPI", nota: "Abate a base do Anexo II" },
+] as const;
+
 type CampoKey = (typeof CAMPOS)[number]["key"];
-type Form = Record<CampoKey | "folha", string>;
+type IsencaoKey = (typeof ISENCOES)[number]["key"];
+type Form = Record<CampoKey | IsencaoKey | "folha", string>;
 
 const formVazio: Form = {
   fat_anexo_i: "",
@@ -69,7 +81,12 @@ const formVazio: Form = {
   fat_anexo_iv: "",
   fat_anexo_v: "",
   folha: "",
+  isento_icms: "",
+  isento_iss: "",
+  isento_pis_cofins: "",
+  isento_ipi: "",
 };
+
 
 function ApuracaoPagina() {
   const { id } = Route.useParams();
