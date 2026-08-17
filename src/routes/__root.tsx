@@ -127,8 +127,48 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="min-h-screen bg-background">
+        <header className="border-b border-border bg-sidebar text-sidebar-foreground">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+            <Link to="/" className="flex items-baseline gap-3">
+              <span className="font-serif text-xl font-semibold tracking-tight">Martins &amp; Ferri</span>
+              <span className="text-xs uppercase tracking-[0.18em] text-sidebar-foreground/60">
+                Simulador Tributário
+              </span>
+            </Link>
+            <nav className="flex items-center gap-1 text-sm">
+              <Link
+                to="/"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+                activeOptions={{ exact: true }}
+              >
+                Empresas
+              </Link>
+              <Link
+                to="/apuracoes/nova"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+              >
+                Nova apuração
+              </Link>
+              <Link
+                to="/empresas/nova"
+                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
+                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
+              >
+                Nova empresa
+              </Link>
+            </nav>
+          </div>
+        </header>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <main className="mx-auto max-w-7xl px-6 py-8">
+          <Outlet />
+        </main>
+      </div>
+      <Toaster richColors position="top-right" />
     </QueryClientProvider>
   );
 }
+
