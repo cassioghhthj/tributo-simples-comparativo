@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { MESES, brl, pct } from "@/lib/format";
 
-export const Route = createFileRoute("/apuracoes/$id")({
+export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
   head: () => ({
     meta: [
       { title: "Apuração | Simulador Tributário Martins & Ferri" },
