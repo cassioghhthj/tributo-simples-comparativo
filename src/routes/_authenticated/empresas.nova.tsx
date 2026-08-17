@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { EmpresaForm, valoresPadrao, type EmpresaFormValues } from "@/components/EmpresaForm";
 
-export const Route = createFileRoute("/empresas/nova")({
+export const Route = createFileRoute("/_authenticated/empresas/nova")({
   head: () => ({
     meta: [
       { title: "Nova empresa | Simulador Tributário Martins & Ferri" },
