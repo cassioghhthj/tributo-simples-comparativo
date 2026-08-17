@@ -107,7 +107,7 @@ function ApuracaoPagina() {
     const l = base.data.lancamentos;
     if (l.length === 0)
       return { ano: base.data.apuracao.ano_inicial, mes: base.data.apuracao.mes_inicial };
-    const ultimo = l[l.length - 1];
+    const ultimo = l[l.length - 1]!;
     return ultimo.mes === 12 ? { ano: ultimo.ano + 1, mes: 1 } : { ano: ultimo.ano, mes: ultimo.mes + 1 };
   }, [base.data]);
 
@@ -574,7 +574,7 @@ function ApuracaoPagina() {
   );
 }
 
-function Indicador({ titulo, valor, nota }: { titulo: string; valor: string; nota?: string }) {
+function Indicador({ titulo, valor, nota }: { titulo: string; valor: string; nota?: string | undefined }) {
   return (
     <Card>
       <CardContent className="space-y-1 py-5">
