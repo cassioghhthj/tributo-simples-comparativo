@@ -20,9 +20,12 @@ export interface RetornoApuracao {
 }
 
 export const calcularApuracaoFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => z.object({ apuracaoId: z.string().uuid() }).parse(data))
-  .handler(async ({ data }): Promise<RetornoApuracao> => {
+  .handler(async ({ data, context }): Promise<RetornoApuracao> => {
+    const supabase = context.supabase;
     const { data: apuracao, error: eAp } = await supabase
+
       .from("apuracoes")
       .select("id, empresa_id, ano_inicial, mes_inicial, ano_tabela, descricao")
       .eq("id", data.apuracaoId)
