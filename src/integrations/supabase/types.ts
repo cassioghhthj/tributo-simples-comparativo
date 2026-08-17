@@ -14,7 +14,329 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      apuracao_semente: {
+        Row: {
+          ano: number
+          apuracao_id: string
+          folha: number
+          id: string
+          mes: number
+          rbt: number
+        }
+        Insert: {
+          ano: number
+          apuracao_id: string
+          folha?: number
+          id?: string
+          mes: number
+          rbt?: number
+        }
+        Update: {
+          ano?: number
+          apuracao_id?: string
+          folha?: number
+          id?: string
+          mes?: number
+          rbt?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apuracao_semente_apuracao_id_fkey"
+            columns: ["apuracao_id"]
+            isOneToOne: false
+            referencedRelation: "apuracoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      apuracoes: {
+        Row: {
+          ano_inicial: number
+          ano_tabela: number
+          created_at: string
+          descricao: string | null
+          empresa_id: string
+          id: string
+          mes_inicial: number
+        }
+        Insert: {
+          ano_inicial: number
+          ano_tabela: number
+          created_at?: string
+          descricao?: string | null
+          empresa_id: string
+          id?: string
+          mes_inicial: number
+        }
+        Update: {
+          ano_inicial?: number
+          ano_tabela?: number
+          created_at?: string
+          descricao?: string | null
+          empresa_id?: string
+          id?: string
+          mes_inicial?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apuracoes_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      empresas: {
+        Row: {
+          anexo_predominante: string
+          atividade: string | null
+          cnpj: string | null
+          created_at: string
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          anexo_predominante?: string
+          atividade?: string | null
+          cnpj?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          anexo_predominante?: string
+          atividade?: string | null
+          cnpj?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lancamentos_mensais: {
+        Row: {
+          ano: number
+          apuracao_id: string
+          created_at: string
+          fat_anexo_i: number
+          fat_anexo_ii: number
+          fat_anexo_iii: number
+          fat_anexo_iv: number
+          fat_anexo_v: number
+          folha: number
+          id: string
+          mes: number
+          updated_at: string
+        }
+        Insert: {
+          ano: number
+          apuracao_id: string
+          created_at?: string
+          fat_anexo_i?: number
+          fat_anexo_ii?: number
+          fat_anexo_iii?: number
+          fat_anexo_iv?: number
+          fat_anexo_v?: number
+          folha?: number
+          id?: string
+          mes: number
+          updated_at?: string
+        }
+        Update: {
+          ano?: number
+          apuracao_id?: string
+          created_at?: string
+          fat_anexo_i?: number
+          fat_anexo_ii?: number
+          fat_anexo_iii?: number
+          fat_anexo_iv?: number
+          fat_anexo_v?: number
+          folha?: number
+          id?: string
+          mes?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_mensais_apuracao_id_fkey"
+            columns: ["apuracao_id"]
+            isOneToOne: false
+            referencedRelation: "apuracoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parametros_empresa: {
+        Row: {
+          created_at: string
+          empresa_id: string
+          id: string
+          perc_encargo_patronal: number
+          perc_icms: number
+          perc_inss_prolabore: number
+          perc_ipi: number
+          perc_iss: number
+          perc_presuncao_comercio: number
+          perc_presuncao_servico: number
+          prolabore_padrao: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          empresa_id: string
+          id?: string
+          perc_encargo_patronal?: number
+          perc_icms?: number
+          perc_inss_prolabore?: number
+          perc_ipi?: number
+          perc_iss?: number
+          perc_presuncao_comercio?: number
+          perc_presuncao_servico?: number
+          prolabore_padrao?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          empresa_id?: string
+          id?: string
+          perc_encargo_patronal?: number
+          perc_icms?: number
+          perc_inss_prolabore?: number
+          perc_ipi?: number
+          perc_iss?: number
+          perc_presuncao_comercio?: number
+          perc_presuncao_servico?: number
+          prolabore_padrao?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parametros_empresa_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: true
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tabela_icms_reducao_pr: {
+        Row: {
+          ano_vigencia: number
+          created_at: string
+          faixa: number
+          id: string
+          percentual_reducao: number
+          receita_max: number | null
+          receita_min: number
+          tipo: string
+        }
+        Insert: {
+          ano_vigencia: number
+          created_at?: string
+          faixa: number
+          id?: string
+          percentual_reducao?: number
+          receita_max?: number | null
+          receita_min: number
+          tipo: string
+        }
+        Update: {
+          ano_vigencia?: number
+          created_at?: string
+          faixa?: number
+          id?: string
+          percentual_reducao?: number
+          receita_max?: number | null
+          receita_min?: number
+          tipo?: string
+        }
+        Relationships: []
+      }
+      tabela_simples_nacional: {
+        Row: {
+          aliquota_nominal: number
+          anexo: string
+          ano_vigencia: number
+          created_at: string
+          faixa: number
+          id: string
+          iss_fixo_percentual: number | null
+          limite_aliquota_efetiva_iss: number | null
+          peso_redist_cofins: number | null
+          peso_redist_cpp: number | null
+          peso_redist_csll: number | null
+          peso_redist_irpj: number | null
+          peso_redist_pis: number | null
+          receita_max: number | null
+          receita_min: number
+          rep_cofins: number
+          rep_cpp: number
+          rep_csll: number
+          rep_icms: number
+          rep_ipi: number
+          rep_irpj: number
+          rep_iss: number
+          rep_pis: number
+          valor_deduzir: number
+        }
+        Insert: {
+          aliquota_nominal: number
+          anexo: string
+          ano_vigencia: number
+          created_at?: string
+          faixa: number
+          id?: string
+          iss_fixo_percentual?: number | null
+          limite_aliquota_efetiva_iss?: number | null
+          peso_redist_cofins?: number | null
+          peso_redist_cpp?: number | null
+          peso_redist_csll?: number | null
+          peso_redist_irpj?: number | null
+          peso_redist_pis?: number | null
+          receita_max?: number | null
+          receita_min: number
+          rep_cofins?: number
+          rep_cpp?: number
+          rep_csll?: number
+          rep_icms?: number
+          rep_ipi?: number
+          rep_irpj?: number
+          rep_iss?: number
+          rep_pis?: number
+          valor_deduzir?: number
+        }
+        Update: {
+          aliquota_nominal?: number
+          anexo?: string
+          ano_vigencia?: number
+          created_at?: string
+          faixa?: number
+          id?: string
+          iss_fixo_percentual?: number | null
+          limite_aliquota_efetiva_iss?: number | null
+          peso_redist_cofins?: number | null
+          peso_redist_cpp?: number | null
+          peso_redist_csll?: number | null
+          peso_redist_irpj?: number | null
+          peso_redist_pis?: number | null
+          receita_max?: number | null
+          receita_min?: number
+          rep_cofins?: number
+          rep_cpp?: number
+          rep_csll?: number
+          rep_icms?: number
+          rep_ipi?: number
+          rep_irpj?: number
+          rep_iss?: number
+          rep_pis?: number
+          valor_deduzir?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
