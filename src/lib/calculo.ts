@@ -453,7 +453,9 @@ export function calcularApuracao(input: {
       folha12,
       fatorR,
       fatorRAtingido,
+      isencoes,
       anexos: detalhes,
+
       simplesTributos: totalTributos,
       simplesTotal,
       simplesAliquota: faturamentoTotal > 0 ? (simplesTotal / faturamentoTotal) * 100 : 0,
