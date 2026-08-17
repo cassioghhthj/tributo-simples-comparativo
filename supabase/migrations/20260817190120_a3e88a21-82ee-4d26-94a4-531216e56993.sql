@@ -1,0 +1,1 @@
+DELETE FROM public.empresas WHERE nome = 'Cliente Teste Ltda';
