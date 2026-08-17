@@ -57,7 +57,12 @@ export interface Lancamento {
   fat_anexo_iv: number;
   fat_anexo_v: number;
   folha: number;
+  isento_icms?: number | null;
+  isento_iss?: number | null;
+  isento_pis_cofins?: number | null;
+  isento_ipi?: number | null;
 }
+
 
 export interface SementeMes {
   ano: number;
