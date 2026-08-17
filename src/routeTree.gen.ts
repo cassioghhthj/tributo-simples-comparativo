@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedApuracoesIdRouteImport } from './routes/_authenticated/apuracoes.$id'
 import { Route as AuthenticatedApuracoesNovaRouteImport } from './routes/_authenticated/apuracoes.nova'
@@ -24,6 +25,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
@@ -58,6 +64,7 @@ const AuthenticatedEmpresasNovaRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/': typeof AuthenticatedIndexRoute
   '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
   '/_authenticated/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/signup'
     | '/apuracoes/$id'
     | '/apuracoes/nova'
     | '/empresas/$id'
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/signup'
     | '/'
     | '/apuracoes/$id'
     | '/apuracoes/nova'
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/login'
+    | '/signup'
     | '/_authenticated/'
     | '/_authenticated/apuracoes/$id'
     | '/_authenticated/apuracoes/nova'
@@ -112,6 +124,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/': {
@@ -190,6 +210,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
