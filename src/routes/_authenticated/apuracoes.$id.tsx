@@ -30,6 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { MemoriaCalculo } from "@/components/MemoriaCalculo";
 import { MESES, brl, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
