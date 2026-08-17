@@ -341,6 +341,42 @@ function ApuracaoPagina() {
                 </div>
               </div>
 
+              <Collapsible open={isencoesAbertas} onOpenChange={setIsencoesAbertas}>
+                <CollapsibleTrigger asChild>
+                  <Button type="button" variant="ghost" size="sm" className="px-0">
+                    {isencoesAbertas ? "▾" : "▸"} Isenções (opcional)
+                    {totalIsencoes > 0 && (
+                      <span className="num ml-2 text-muted-foreground">{brl(totalIsencoes)}</span>
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-3">
+                  <p className="mb-3 text-sm text-muted-foreground">
+                    Parcela da receita do mês isenta de cada tributo dentro do Simples Nacional
+                    (substituição tributária, monofásico, exportação etc.). A base de cálculo do tributo é
+                    reduzida no valor informado, nunca abaixo de zero.
+                  </p>
+                  <div className="grid gap-4 md:grid-cols-4">
+                    {ISENCOES.map((c) => (
+                      <div key={c.key} className="space-y-2">
+                        <Label htmlFor={c.key}>{c.label}</Label>
+                        <Input
+                          id={c.key}
+                          type="number"
+                          step="0.01"
+                          className="num"
+                          value={form[c.key]}
+                          onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                        />
+                        <p className="text-xs text-muted-foreground">{c.nota}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+
+
               <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                 <p className="text-sm text-muted-foreground">
                   Faturamento total do mês:{" "}
