@@ -9,70 +9,101 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApuracoesIdRouteImport } from './routes/apuracoes.$id'
-import { Route as ApuracoesNovaRouteImport } from './routes/apuracoes.nova'
-import { Route as EmpresasIdRouteImport } from './routes/empresas.$id'
-import { Route as EmpresasNovaRouteImport } from './routes/empresas.nova'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedApuracoesIdRouteImport } from './routes/_authenticated/apuracoes.$id'
+import { Route as AuthenticatedApuracoesNovaRouteImport } from './routes/_authenticated/apuracoes.nova'
+import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
+import { Route as AuthenticatedEmpresasNovaRouteImport } from './routes/_authenticated/empresas.nova'
 
-const IndexRoute = IndexRouteImport.update({
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApuracoesIdRoute = ApuracoesIdRouteImport.update({
-  id: '/apuracoes/$id',
-  path: '/apuracoes/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApuracoesNovaRoute = ApuracoesNovaRouteImport.update({
-  id: '/apuracoes/nova',
-  path: '/apuracoes/nova',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmpresasIdRoute = EmpresasIdRouteImport.update({
+const AuthenticatedApuracoesIdRoute =
+  AuthenticatedApuracoesIdRouteImport.update({
+    id: '/apuracoes/$id',
+    path: '/apuracoes/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedApuracoesNovaRoute =
+  AuthenticatedApuracoesNovaRouteImport.update({
+    id: '/apuracoes/nova',
+    path: '/apuracoes/nova',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedEmpresasIdRoute = AuthenticatedEmpresasIdRouteImport.update({
   id: '/empresas/$id',
   path: '/empresas/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const EmpresasNovaRoute = EmpresasNovaRouteImport.update({
-  id: '/empresas/nova',
-  path: '/empresas/nova',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedEmpresasNovaRoute =
+  AuthenticatedEmpresasNovaRouteImport.update({
+    id: '/empresas/nova',
+    path: '/empresas/nova',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/apuracoes/$id': typeof ApuracoesIdRoute
-  '/apuracoes/nova': typeof ApuracoesNovaRoute
-  '/empresas/$id': typeof EmpresasIdRoute
-  '/empresas/nova': typeof EmpresasNovaRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
+  '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
+  '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/apuracoes/$id': typeof ApuracoesIdRoute
-  '/apuracoes/nova': typeof ApuracoesNovaRoute
-  '/empresas/$id': typeof EmpresasIdRoute
-  '/empresas/nova': typeof EmpresasNovaRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
+  '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
+  '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/apuracoes/$id': typeof ApuracoesIdRoute
-  '/apuracoes/nova': typeof ApuracoesNovaRoute
-  '/empresas/$id': typeof EmpresasIdRoute
-  '/empresas/nova': typeof EmpresasNovaRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/_authenticated/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
+  '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
+  '/_authenticated/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/signup'
     | '/apuracoes/$id'
     | '/apuracoes/nova'
     | '/empresas/$id'
     | '/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
+    | '/signup'
     | '/'
     | '/apuracoes/$id'
     | '/apuracoes/nova'
@@ -80,67 +111,106 @@ export interface FileRouteTypes {
     | '/empresas/nova'
   id:
     | '__root__'
-    | '/'
-    | '/apuracoes/$id'
-    | '/apuracoes/nova'
-    | '/empresas/$id'
-    | '/empresas/nova'
+    | '/_authenticated'
+    | '/login'
+    | '/signup'
+    | '/_authenticated/'
+    | '/_authenticated/apuracoes/$id'
+    | '/_authenticated/apuracoes/nova'
+    | '/_authenticated/empresas/$id'
+    | '/_authenticated/empresas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  ApuracoesIdRoute: typeof ApuracoesIdRoute
-  ApuracoesNovaRoute: typeof ApuracoesNovaRoute
-  EmpresasIdRoute: typeof EmpresasIdRoute
-  EmpresasNovaRoute: typeof EmpresasNovaRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/apuracoes/$id': {
-      id: '/apuracoes/$id'
+    '/_authenticated/apuracoes/$id': {
+      id: '/_authenticated/apuracoes/$id'
       path: '/apuracoes/$id'
       fullPath: '/apuracoes/$id'
-      preLoaderRoute: typeof ApuracoesIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedApuracoesIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/apuracoes/nova': {
-      id: '/apuracoes/nova'
+    '/_authenticated/apuracoes/nova': {
+      id: '/_authenticated/apuracoes/nova'
       path: '/apuracoes/nova'
       fullPath: '/apuracoes/nova'
-      preLoaderRoute: typeof ApuracoesNovaRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedApuracoesNovaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/empresas/$id': {
-      id: '/empresas/$id'
+    '/_authenticated/empresas/$id': {
+      id: '/_authenticated/empresas/$id'
       path: '/empresas/$id'
       fullPath: '/empresas/$id'
-      preLoaderRoute: typeof EmpresasIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedEmpresasIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/empresas/nova': {
-      id: '/empresas/nova'
+    '/_authenticated/empresas/nova': {
+      id: '/_authenticated/empresas/nova'
       path: '/empresas/nova'
       fullPath: '/empresas/nova'
-      preLoaderRoute: typeof EmpresasNovaRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedEmpresasNovaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedApuracoesIdRoute: typeof AuthenticatedApuracoesIdRoute
+  AuthenticatedApuracoesNovaRoute: typeof AuthenticatedApuracoesNovaRoute
+  AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
+  AuthenticatedEmpresasNovaRoute: typeof AuthenticatedEmpresasNovaRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedApuracoesIdRoute: AuthenticatedApuracoesIdRoute,
+  AuthenticatedApuracoesNovaRoute: AuthenticatedApuracoesNovaRoute,
+  AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
+  AuthenticatedEmpresasNovaRoute: AuthenticatedEmpresasNovaRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  ApuracoesIdRoute: ApuracoesIdRoute,
-  ApuracoesNovaRoute: ApuracoesNovaRoute,
-  EmpresasIdRoute: EmpresasIdRoute,
-  EmpresasNovaRoute: EmpresasNovaRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

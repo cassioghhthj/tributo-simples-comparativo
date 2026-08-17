@@ -18,7 +18,7 @@ import {
 import { MESES, brl, nomeMes } from "@/lib/format";
 import { mesesAnteriores } from "@/lib/calculo";
 
-export const Route = createFileRoute("/apuracoes/nova")({
+export const Route = createFileRoute("/_authenticated/apuracoes/nova")({
   head: () => ({
     meta: [
       { title: "Iniciar apuração | Simulador Tributário Martins & Ferri" },

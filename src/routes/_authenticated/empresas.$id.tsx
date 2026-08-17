@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { nomeMes } from "@/lib/format";
 
-export const Route = createFileRoute("/empresas/$id")({
+export const Route = createFileRoute("/_authenticated/empresas/$id")({
   head: () => ({
     meta: [
       { title: "Cadastro do cliente | Simulador Tributário Martins & Ferri" },

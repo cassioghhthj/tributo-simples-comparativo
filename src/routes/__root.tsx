@@ -11,7 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
+import { HeaderAuth } from "@/components/HeaderAuth";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+
 
 function NotFoundComponent() {
   return (
@@ -137,30 +139,8 @@ function RootComponent() {
                 Simulador Tributário
               </span>
             </Link>
-            <nav className="flex items-center gap-1 text-sm">
-              <Link
-                to="/"
-                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
-                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
-                activeOptions={{ exact: true }}
-              >
-                Empresas
-              </Link>
-              <Link
-                to="/apuracoes/nova"
-                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
-                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
-              >
-                Nova apuração
-              </Link>
-              <Link
-                to="/empresas/nova"
-                className="rounded-md px-3 py-1.5 transition-colors hover:bg-sidebar-accent"
-                activeProps={{ className: "bg-sidebar-accent rounded-md px-3 py-1.5" }}
-              >
-                Nova empresa
-              </Link>
-            </nav>
+            <HeaderAuth />
+
           </div>
         </header>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
