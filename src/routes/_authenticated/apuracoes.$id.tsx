@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -574,8 +574,8 @@ function ApuracaoPagina() {
                   </thead>
                   <tbody className="num">
                     {resultados.map((r) => (
-                      <>
-                        <tr key={r.competencia} className="border-b border-border/60">
+                      <Fragment key={r.competencia}>
+                        <tr className="border-b border-border/60">
                           <td className="px-6 py-2">{r.competencia}</td>
                           <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
                           <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
@@ -605,13 +605,13 @@ function ApuracaoPagina() {
                           </td>
                         </tr>
                         {expandido === r.competencia && (
-                          <tr key={`${r.competencia}-memoria`} className="border-b border-border/60">
+                          <tr className="border-b border-border/60">
                             <td colSpan={10} className="p-0">
                               <MemoriaCalculo r={r} />
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     ))}
                     {resultados.length === 0 && (
                       <tr>
@@ -644,9 +644,10 @@ function ApuracaoPagina() {
                               : 0,
                           )}
                         </td>
-                        <td className="px-6 py-3 text-right">
+                        <td className="px-3 py-3 text-right">
                           {brl(acumulado.presumido - acumulado.simples)}
                         </td>
+                        <td className="px-6 py-3" />
                       </tr>
                     </tfoot>
                   )}
