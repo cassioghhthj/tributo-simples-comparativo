@@ -132,6 +132,8 @@ function ApuracaoPagina() {
 
   const [comp, setComp] = useState<{ ano: string; mes: string } | null>(null);
   const [form, setForm] = useState<Form>(formVazio);
+  const [isencoesAbertas, setIsencoesAbertas] = useState(false);
+  const [expandido, setExpandido] = useState<string | null>(null);
 
   const compAtual = comp ?? { ano: String(proxima.ano), mes: String(proxima.mes) };
 
