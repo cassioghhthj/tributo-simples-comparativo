@@ -190,6 +190,29 @@ function acharFaixa(faixas: FaixaSimples[], anexo: string, rbt12: number) {
   );
 }
 
+/**
+ * Aloca um valor isento em cascata pelos anexos informados, na ordem dada,
+ * limitado ao faturamento de cada anexo.
+ */
+function alocarIsencao(
+  valor: number,
+  ordem: AnexoKey[],
+  faturamentos: Record<AnexoKey, number>,
+): { porAnexo: Record<AnexoKey, number>; total: number } {
+  const porAnexo: Record<AnexoKey, number> = { I: 0, II: 0, III: 0, IV: 0, V: 0 };
+  let restante = Math.max(0, num(valor));
+  let total = 0;
+  for (const a of ordem) {
+    if (restante <= 0) break;
+    const aplicado = Math.min(restante, Math.max(0, faturamentos[a]));
+    porAnexo[a] = aplicado;
+    restante -= aplicado;
+    total += aplicado;
+  }
+  return { porAnexo, total };
+}
+
+
 function reducaoIcmsPr(tabela: FaixaIcmsPr[], tipo: "comercio" | "industria", rbt12: number) {
   const f = tabela.find(
     (r) =>
