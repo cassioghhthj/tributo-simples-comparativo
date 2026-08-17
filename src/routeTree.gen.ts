@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApuracoesNovaRouteImport } from './routes/apuracoes.nova'
 import { Route as EmpresasIdRouteImport } from './routes/empresas.$id'
 import { Route as EmpresasNovaRouteImport } from './routes/empresas.nova'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApuracoesNovaRoute = ApuracoesNovaRouteImport.update({
+  id: '/apuracoes/nova',
+  path: '/apuracoes/nova',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmpresasIdRoute = EmpresasIdRouteImport.update({
@@ -31,30 +37,34 @@ const EmpresasNovaRoute = EmpresasNovaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
   '/empresas/$id': typeof EmpresasIdRoute
   '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
   '/empresas/$id': typeof EmpresasIdRoute
   '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/apuracoes/nova': typeof ApuracoesNovaRoute
   '/empresas/$id': typeof EmpresasIdRoute
   '/empresas/nova': typeof EmpresasNovaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/empresas/$id' | '/empresas/nova'
+  fullPaths: '/' | '/apuracoes/nova' | '/empresas/$id' | '/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/empresas/$id' | '/empresas/nova'
-  id: '__root__' | '/' | '/empresas/$id' | '/empresas/nova'
+  to: '/' | '/apuracoes/nova' | '/empresas/$id' | '/empresas/nova'
+  id: '__root__' | '/' | '/apuracoes/nova' | '/empresas/$id' | '/empresas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApuracoesNovaRoute: typeof ApuracoesNovaRoute
   EmpresasIdRoute: typeof EmpresasIdRoute
   EmpresasNovaRoute: typeof EmpresasNovaRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apuracoes/nova': {
+      id: '/apuracoes/nova'
+      path: '/apuracoes/nova'
+      fullPath: '/apuracoes/nova'
+      preLoaderRoute: typeof ApuracoesNovaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/empresas/$id': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApuracoesNovaRoute: ApuracoesNovaRoute,
   EmpresasIdRoute: EmpresasIdRoute,
   EmpresasNovaRoute: EmpresasNovaRoute,
 }
