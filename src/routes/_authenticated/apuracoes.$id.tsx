@@ -169,6 +169,7 @@ function ApuracaoPagina() {
   }, [base.data, compAtual.ano, compAtual.mes]);
 
   const totalDigitado = CAMPOS.reduce((acc, c) => acc + (Number(form[c.key]) || 0), 0);
+  const totalIsencoes = ISENCOES.reduce((acc, c) => acc + (Number(form[c.key]) || 0), 0);
 
   const salvar = useMutation({
     mutationFn: async () => {
