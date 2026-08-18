@@ -34,7 +34,8 @@ export interface FaixaIcmsPr {
   faixa: number;
   receita_min: number;
   receita_max: number | null;
-  percentual_reducao: number;
+  aliquota_nominal_icms_pr: number;
+  valor_deduzir_icms_pr: number;
 }
 
 export interface ParametrosEmpresa {
@@ -213,14 +214,27 @@ function alocarIsencao(
 }
 
 
-function reducaoIcmsPr(tabela: FaixaIcmsPr[], tipo: "comercio" | "industria", rbt12: number) {
+/**
+ * Alíquota efetiva de ICMS pela tabela própria do PR (nominal + parcela a deduzir).
+ * Faixas 1 e 2 (RBT12 até R$ 360.000,00) são isentas de ICMS → 0.
+ * Sem faixa aplicável (acima de R$ 3.600.000,00) o ICMS sai do DAS → 0 no Simples.
+ */
+function aliquotaEfetivaIcmsPr(
+  tabela: FaixaIcmsPr[],
+  tipo: "comercio" | "industria",
+  rbt12: number,
+) {
+  if (rbt12 <= 0) return 0;
   const f = tabela.find(
     (r) =>
       r.tipo === tipo &&
       rbt12 >= num(r.receita_min) &&
       (r.receita_max === null || rbt12 <= num(r.receita_max)),
   );
-  return f ? num(f.percentual_reducao) : 0;
+  if (!f) return 0;
+  const efetiva =
+    ((rbt12 * (num(f.aliquota_nominal_icms_pr) / 100) - num(f.valor_deduzir_icms_pr)) / rbt12) * 100;
+  return Math.max(0, efetiva);
 }
 
 /** Repartição da alíquota efetiva em alíquotas por tributo (em %). */
@@ -384,12 +398,12 @@ export function calcularApuracao(input: {
       let icmsPr: DetalheIcmsPr | undefined;
       if (anexoAplicado === "I" || anexoAplicado === "II") {
         const tipo = anexoAplicado === "I" ? "comercio" : "industria";
-        const reducao = reducaoIcmsPr(tabelaIcmsPr, tipo, rbt12);
         const antes = aliquotas.icms;
-        aliquotas.icms = antes * (1 - reducao / 100);
+        // Tabela própria do ICMS-PR substitui integralmente a alíquota vinda da repartição do DAS.
+        aliquotas.icms = aliquotaEfetivaIcmsPr(tabelaIcmsPr, tipo, rbt12);
         icmsPr = {
           aliquotaAntes: antes,
-          percentualReducao: reducao,
+          percentualReducao: antes > 0 ? (1 - aliquotas.icms / antes) * 100 : 0,
           aliquotaDepois: aliquotas.icms,
         };
       }

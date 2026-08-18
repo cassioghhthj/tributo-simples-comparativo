@@ -104,11 +104,12 @@ function BlocoAnexo({ d, faturamentoMes }: { d: DetalheAnexo; faturamentoMes: nu
         <div className="mb-3 rounded bg-muted/50 p-2 text-xs">
           <p className="font-medium">Memória do ICMS-PR</p>
           <ul className="num mt-1 space-y-0.5 text-muted-foreground">
-            <li>Alíquota de ICMS no Simples (antes da redução): {pct(d.icmsPr.aliquotaAntes, 4)}</li>
-            <li>Redução PR aplicada: {pct(d.icmsPr.percentualReducao, 2)}</li>
+            <li>Alíquota de ICMS pela repartição do DAS: {pct(d.icmsPr.aliquotaAntes, 4)}</li>
             <li className="text-foreground">
-              Alíquota efetiva final de ICMS: {pct(d.icmsPr.aliquotaDepois, 4)}
+              Alíquota efetiva de ICMS pela tabela PR (nominal − parcela a deduzir):{" "}
+              {pct(d.icmsPr.aliquotaDepois, 4)}
             </li>
+            <li>Redução equivalente (informativo): {pct(d.icmsPr.percentualReducao, 2)}</li>
           </ul>
         </div>
       )}
