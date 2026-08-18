@@ -34,7 +34,8 @@ export interface FaixaIcmsPr {
   faixa: number;
   receita_min: number;
   receita_max: number | null;
-  percentual_reducao: number;
+  aliquota_nominal_icms_pr: number;
+  valor_deduzir_icms_pr: number;
 }
 
 export interface ParametrosEmpresa {
