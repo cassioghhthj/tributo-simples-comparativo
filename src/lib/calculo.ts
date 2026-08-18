@@ -398,12 +398,12 @@ export function calcularApuracao(input: {
       let icmsPr: DetalheIcmsPr | undefined;
       if (anexoAplicado === "I" || anexoAplicado === "II") {
         const tipo = anexoAplicado === "I" ? "comercio" : "industria";
-        const reducao = reducaoIcmsPr(tabelaIcmsPr, tipo, rbt12);
         const antes = aliquotas.icms;
-        aliquotas.icms = antes * (1 - reducao / 100);
+        // Tabela própria do ICMS-PR substitui integralmente a alíquota vinda da repartição do DAS.
+        aliquotas.icms = aliquotaEfetivaIcmsPr(tabelaIcmsPr, tipo, rbt12);
         icmsPr = {
           aliquotaAntes: antes,
-          percentualReducao: reducao,
+          percentualReducao: antes > 0 ? (1 - aliquotas.icms / antes) * 100 : 0,
           aliquotaDepois: aliquotas.icms,
         };
       }
