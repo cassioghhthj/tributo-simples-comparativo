@@ -237,34 +237,37 @@ export type Database = {
       }
       tabela_icms_reducao_pr: {
         Row: {
+          aliquota_nominal_icms_pr: number
           ano_vigencia: number
           created_at: string
           faixa: number
           id: string
-          percentual_reducao: number
           receita_max: number | null
           receita_min: number
           tipo: string
+          valor_deduzir_icms_pr: number
         }
         Insert: {
+          aliquota_nominal_icms_pr?: number
           ano_vigencia: number
           created_at?: string
           faixa: number
           id?: string
-          percentual_reducao?: number
           receita_max?: number | null
           receita_min: number
           tipo: string
+          valor_deduzir_icms_pr?: number
         }
         Update: {
+          aliquota_nominal_icms_pr?: number
           ano_vigencia?: number
           created_at?: string
           faixa?: number
           id?: string
-          percentual_reducao?: number
           receita_max?: number | null
           receita_min?: number
           tipo?: string
+          valor_deduzir_icms_pr?: number
         }
         Relationships: []
       }
