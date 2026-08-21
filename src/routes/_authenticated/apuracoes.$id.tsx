@@ -473,6 +473,8 @@ function ApuracaoPagina() {
               )}
             </CardContent>
           </Card>
+          )}
+
 
           <Card>
             <CardHeader>
