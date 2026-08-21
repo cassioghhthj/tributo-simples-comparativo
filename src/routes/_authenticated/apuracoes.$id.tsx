@@ -387,9 +387,9 @@ function ApuracaoPagina() {
                       id={c.key}
                       type="number"
                       step="0.01"
-                      className="num"
+                      className={"num" + classeSugerido(c.key)}
                       value={form[c.key]}
-                      onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                      onChange={(e) => atualizarCampo(c.key, e.target.value)}
                     />
                   </div>
                 ))}
@@ -399,11 +399,12 @@ function ApuracaoPagina() {
                     id="folha"
                     type="number"
                     step="0.01"
-                    className="num"
+                    className={"num" + classeSugerido("folha")}
                     value={form.folha}
-                    onChange={(e) => setForm({ ...form, folha: e.target.value })}
+                    onChange={(e) => atualizarCampo("folha", e.target.value)}
                   />
                 </div>
+
               </div>
 
               <Collapsible open={isencoesAbertas} onOpenChange={setIsencoesAbertas}>
