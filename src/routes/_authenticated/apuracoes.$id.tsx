@@ -335,7 +335,20 @@ function ApuracaoPagina() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
+              {sugestaoDe && camposSugeridos.length > 0 && (
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-warning/50 bg-warning/5 px-4 py-3 text-sm">
+                  <span>
+                    Valores pré-preenchidos com o lançamento de{" "}
+                    <strong className="num">{sugestaoDe}</strong> — confira e edite antes de salvar. Nada
+                    é salvo automaticamente.
+                  </span>
+                  <Button type="button" variant="ghost" size="sm" onClick={limparSugestao}>
+                    Limpar campos
+                  </Button>
+                </div>
+              )}
               <div className="grid gap-4 md:grid-cols-4">
+
                 <div className="space-y-2">
                   <Label>Mês</Label>
                   <Select
