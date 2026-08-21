@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -134,8 +134,55 @@ function ApuracaoPagina() {
   const [form, setForm] = useState<Form>(formVazio);
   const [isencoesAbertas, setIsencoesAbertas] = useState(false);
   const [expandido, setExpandido] = useState<string | null>(null);
+  const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
+  const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
+  const prefillRef = useRef<string | null>(null);
+
+  const ultimoLancamento = base.data?.lancamentos.at(-1) ?? null;
+
+  const atualizarCampo = (key: keyof Form, valor: string) => {
+    setForm((f) => ({ ...f, [key]: valor }));
+    setCamposSugeridos((s) => s.filter((k) => k !== key));
+  };
+
+  const limparSugestao = () => {
+    setForm(formVazio);
+    setCamposSugeridos([]);
+    setSugestaoDe(null);
+  };
+
+  // Pré-preenche o formulário com o último lançamento salvo (apenas sugestão, nada é salvo).
+  useEffect(() => {
+    if (!ultimoLancamento) return;
+    const marca = `${id}-${ultimoLancamento.id}-${ultimoLancamento.ano}-${ultimoLancamento.mes}`;
+    if (prefillRef.current === marca) return;
+    prefillRef.current = marca;
+
+    const num = (v: unknown) => (Number(v) ? String(Number(v)) : "");
+    const novo: Form = {
+      fat_anexo_i: num(ultimoLancamento.fat_anexo_i),
+      fat_anexo_ii: num(ultimoLancamento.fat_anexo_ii),
+      fat_anexo_iii: num(ultimoLancamento.fat_anexo_iii),
+      fat_anexo_iv: num(ultimoLancamento.fat_anexo_iv),
+      fat_anexo_v: num(ultimoLancamento.fat_anexo_v),
+      folha: num(ultimoLancamento.folha),
+      isento_icms: num(ultimoLancamento.isento_icms),
+      isento_iss: num(ultimoLancamento.isento_iss),
+      isento_pis_cofins: num(ultimoLancamento.isento_pis_cofins),
+      isento_ipi: num(ultimoLancamento.isento_ipi),
+    };
+    const preenchidos = (Object.keys(novo) as (keyof Form)[]).filter((k) => novo[k] !== "");
+    if (preenchidos.length === 0) return;
+    setForm(novo);
+    setCamposSugeridos(preenchidos as string[]);
+    setSugestaoDe(`${String(ultimoLancamento.mes).padStart(2, "0")}/${ultimoLancamento.ano}`);
+    if (ISENCOES.some((c) => novo[c.key] !== "")) setIsencoesAbertas(true);
+  }, [id, ultimoLancamento]);
 
   const compAtual = comp ?? { ano: String(proxima.ano), mes: String(proxima.mes) };
+  const classeSugerido = (key: keyof Form) =>
+    camposSugeridos.includes(key) ? " border-warning/70 bg-warning/5" : "";
+
 
   const previa = useMemo(() => {
     if (!base.data) return { rbt12: 0, folha12: 0, fatorR: 0, faltando: 0 };
@@ -288,7 +335,20 @@ function ApuracaoPagina() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
+              {sugestaoDe && camposSugeridos.length > 0 && (
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-warning/50 bg-warning/5 px-4 py-3 text-sm">
+                  <span>
+                    Valores pré-preenchidos com o lançamento de{" "}
+                    <strong className="num">{sugestaoDe}</strong> — confira e edite antes de salvar. Nada
+                    é salvo automaticamente.
+                  </span>
+                  <Button type="button" variant="ghost" size="sm" onClick={limparSugestao}>
+                    Limpar campos
+                  </Button>
+                </div>
+              )}
               <div className="grid gap-4 md:grid-cols-4">
+
                 <div className="space-y-2">
                   <Label>Mês</Label>
                   <Select
@@ -327,9 +387,9 @@ function ApuracaoPagina() {
                       id={c.key}
                       type="number"
                       step="0.01"
-                      className="num"
+                      className={"num" + classeSugerido(c.key)}
                       value={form[c.key]}
-                      onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                      onChange={(e) => atualizarCampo(c.key, e.target.value)}
                     />
                   </div>
                 ))}
@@ -339,11 +399,12 @@ function ApuracaoPagina() {
                     id="folha"
                     type="number"
                     step="0.01"
-                    className="num"
+                    className={"num" + classeSugerido("folha")}
                     value={form.folha}
-                    onChange={(e) => setForm({ ...form, folha: e.target.value })}
+                    onChange={(e) => atualizarCampo("folha", e.target.value)}
                   />
                 </div>
+
               </div>
 
               <Collapsible open={isencoesAbertas} onOpenChange={setIsencoesAbertas}>
@@ -369,10 +430,11 @@ function ApuracaoPagina() {
                           id={c.key}
                           type="number"
                           step="0.01"
-                          className="num"
+                          className={"num" + classeSugerido(c.key)}
                           value={form[c.key]}
-                          onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                          onChange={(e) => atualizarCampo(c.key, e.target.value)}
                         />
+
                         <p className="text-xs text-muted-foreground">{c.nota}</p>
                       </div>
                     ))}
