@@ -326,6 +326,17 @@ function ApuracaoPagina() {
             />
           </div>
 
+          {apuracaoCompleta ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Apuração completa</CardTitle>
+                <CardDescription>
+                  Esta apuração já tem os 12 meses completos. Para lançar outra competência, exclua um
+                  lançamento existente ou crie uma nova apuração.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ) : (
           <Card>
             <CardHeader>
               <CardTitle>Novo lançamento</CardTitle>
@@ -335,6 +346,7 @@ function ApuracaoPagina() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
+
               {sugestaoDe && camposSugeridos.length > 0 && (
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-warning/50 bg-warning/5 px-4 py-3 text-sm">
                   <span>
