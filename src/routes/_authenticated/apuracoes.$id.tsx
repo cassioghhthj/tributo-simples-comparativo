@@ -134,8 +134,55 @@ function ApuracaoPagina() {
   const [form, setForm] = useState<Form>(formVazio);
   const [isencoesAbertas, setIsencoesAbertas] = useState(false);
   const [expandido, setExpandido] = useState<string | null>(null);
+  const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
+  const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
+  const prefillRef = useRef<string | null>(null);
+
+  const ultimoLancamento = base.data?.lancamentos.at(-1) ?? null;
+
+  const atualizarCampo = (key: keyof Form, valor: string) => {
+    setForm((f) => ({ ...f, [key]: valor }));
+    setCamposSugeridos((s) => s.filter((k) => k !== key));
+  };
+
+  const limparSugestao = () => {
+    setForm(formVazio);
+    setCamposSugeridos([]);
+    setSugestaoDe(null);
+  };
+
+  // Pré-preenche o formulário com o último lançamento salvo (apenas sugestão, nada é salvo).
+  useEffect(() => {
+    if (!ultimoLancamento) return;
+    const marca = `${id}-${ultimoLancamento.id}-${ultimoLancamento.ano}-${ultimoLancamento.mes}`;
+    if (prefillRef.current === marca) return;
+    prefillRef.current = marca;
+
+    const num = (v: unknown) => (Number(v) ? String(Number(v)) : "");
+    const novo: Form = {
+      fat_anexo_i: num(ultimoLancamento.fat_anexo_i),
+      fat_anexo_ii: num(ultimoLancamento.fat_anexo_ii),
+      fat_anexo_iii: num(ultimoLancamento.fat_anexo_iii),
+      fat_anexo_iv: num(ultimoLancamento.fat_anexo_iv),
+      fat_anexo_v: num(ultimoLancamento.fat_anexo_v),
+      folha: num(ultimoLancamento.folha),
+      isento_icms: num(ultimoLancamento.isento_icms),
+      isento_iss: num(ultimoLancamento.isento_iss),
+      isento_pis_cofins: num(ultimoLancamento.isento_pis_cofins),
+      isento_ipi: num(ultimoLancamento.isento_ipi),
+    };
+    const preenchidos = (Object.keys(novo) as (keyof Form)[]).filter((k) => novo[k] !== "");
+    if (preenchidos.length === 0) return;
+    setForm(novo);
+    setCamposSugeridos(preenchidos as string[]);
+    setSugestaoDe(`${String(ultimoLancamento.mes).padStart(2, "0")}/${ultimoLancamento.ano}`);
+    if (ISENCOES.some((c) => novo[c.key] !== "")) setIsencoesAbertas(true);
+  }, [id, ultimoLancamento]);
 
   const compAtual = comp ?? { ano: String(proxima.ano), mes: String(proxima.mes) };
+  const classeSugerido = (key: keyof Form) =>
+    camposSugeridos.includes(key) ? " border-warning/70 bg-warning/5" : "";
+
 
   const previa = useMemo(() => {
     if (!base.data) return { rbt12: 0, folha12: 0, fatorR: 0, faltando: 0 };
