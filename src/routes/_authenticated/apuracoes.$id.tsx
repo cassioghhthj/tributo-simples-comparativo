@@ -139,6 +139,8 @@ function ApuracaoPagina() {
   const prefillRef = useRef<string | null>(null);
 
   const ultimoLancamento = base.data?.lancamentos.at(-1) ?? null;
+  const apuracaoCompleta = (base.data?.lancamentos.length ?? 0) >= 12;
+
 
   const atualizarCampo = (key: keyof Form, valor: string) => {
     setForm((f) => ({ ...f, [key]: valor }));
