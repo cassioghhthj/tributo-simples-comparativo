@@ -430,10 +430,11 @@ function ApuracaoPagina() {
                           id={c.key}
                           type="number"
                           step="0.01"
-                          className="num"
+                          className={"num" + classeSugerido(c.key)}
                           value={form[c.key]}
-                          onChange={(e) => setForm({ ...form, [c.key]: e.target.value })}
+                          onChange={(e) => atualizarCampo(c.key, e.target.value)}
                         />
+
                         <p className="text-xs text-muted-foreground">{c.nota}</p>
                       </div>
                     ))}
