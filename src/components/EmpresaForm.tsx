@@ -46,9 +46,9 @@ export const valoresPadrao: EmpresaFormValues = {
 const ANEXOS = [
   { value: "I", label: "Anexo I — Comércio" },
   { value: "II", label: "Anexo II — Indústria" },
-  { value: "III", label: "Anexo III — Serviços (Fator R)" },
+  { value: "III", label: "Anexo III — Serviços" },
   { value: "IV", label: "Anexo IV — Serviços" },
-  { value: "V", label: "Anexo V — Serviços" },
+  { value: "V", label: "Anexo V — Serviços (Fator R)" },
 ];
 
 const CAMPOS_PARAM: { key: keyof EmpresaFormValues; label: string; sufixo: string; ajuda?: string }[] = [
