@@ -54,10 +54,10 @@ export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
 });
 
 const CAMPOS = [
-  { key: "fat_anexo_i", label: "Anexo I — Comércio" },
-  { key: "fat_anexo_ii", label: "Anexo II — Indústria" },
-  { key: "fat_anexo_iii", label: "Anexo III — Serviço" },
-  { key: "fat_anexo_iv", label: "Anexo IV — Serviço" },
+  { key: "fat_anexo_i", label: "Anexo I — Comércio", ajuda: undefined },
+  { key: "fat_anexo_ii", label: "Anexo II — Indústria", ajuda: undefined },
+  { key: "fat_anexo_iii", label: "Anexo III — Serviço", ajuda: undefined },
+  { key: "fat_anexo_iv", label: "Anexo IV — Serviço", ajuda: undefined },
   {
     key: "fat_anexo_v",
     label: "Anexo V — Serviço (Fator R)",
