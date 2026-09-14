@@ -562,6 +562,11 @@ function ApuracaoPagina() {
         </TabsContent>
 
         <TabsContent value="relatorio" className="space-y-6 pt-4">
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => navigate({ to: "/apuracoes/$id/pdf", params: { id } })}>
+              Exportar PDF
+            </Button>
+          </div>
           <div className="grid gap-4 md:grid-cols-4">
             <Indicador titulo="Faturamento acumulado" valor={brl(acumulado.faturamento)} />
             <Indicador
