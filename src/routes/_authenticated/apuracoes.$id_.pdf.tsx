@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { calcularApuracaoFn } from "@/lib/apuracao.functions";
 import { brl, pct } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/apuracoes/$id/pdf")({
+export const Route = createFileRoute("/_authenticated/apuracoes/$id_/pdf")({
   head: () => ({
     meta: [
       { title: "Relatório comparativo (PDF) | Martins & Ferri" },
