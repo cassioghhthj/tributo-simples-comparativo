@@ -758,22 +758,34 @@ function ApuracaoPagina() {
                           <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
                           <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
                           <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
-                          <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
+                          <td className="px-3 py-2 text-right">{brl(simplesDe(r))}</td>
                           <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
                             {r.anexos
                               .filter((a) => a.faturamento > 0)
                               .map((a) => (a.anexo === "V" && r.fatorRAtingido ? "V → III" : a.anexo))
                               .join(", ") || "—"}
                           </td>
-                          <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
-                          <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
-                          <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
+                          <td className="px-3 py-2 text-right">
+                            {pct(
+                              r.faturamentoTotal > 0
+                                ? (simplesDe(r) / r.faturamentoTotal) * 100
+                                : 0,
+                            )}
+                          </td>
+                          <td className="px-3 py-2 text-right">{brl(presumidoDe(r))}</td>
+                          <td className="px-3 py-2 text-right">
+                            {pct(
+                              r.faturamentoTotal > 0
+                                ? (presumidoDe(r) / r.faturamentoTotal) * 100
+                                : 0,
+                            )}
+                          </td>
                           <td
                             className={`px-3 py-2 text-right font-medium ${
-                              r.economia >= 0 ? "text-success" : "text-destructive"
+                              presumidoDe(r) - simplesDe(r) >= 0 ? "text-success" : "text-destructive"
                             }`}
                           >
-                            {brl(r.economia)}
+                            {brl(presumidoDe(r) - simplesDe(r))}
                           </td>
                           <td className="px-6 py-2 text-right">
                             <Button
