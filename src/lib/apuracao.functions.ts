@@ -54,7 +54,9 @@ export const calcularApuracaoFn = createServerFn({ method: "GET" })
       perc_icms: 0,
       perc_ipi: 0,
       perc_inss_prolabore: 11,
-      perc_encargo_patronal: 20,
+      perc_cpp_patronal: 20,
+      perc_terceiros: 5.8,
+      perc_rat: 2,
       prolabore_padrao: 0,
     };
 

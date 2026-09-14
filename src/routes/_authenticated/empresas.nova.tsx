@@ -51,7 +51,9 @@ function NovaEmpresa() {
         perc_icms: Number(values.perc_icms) || 0,
         perc_ipi: Number(values.perc_ipi) || 0,
         perc_inss_prolabore: Number(values.perc_inss_prolabore) || 0,
-        perc_encargo_patronal: Number(values.perc_encargo_patronal) || 0,
+        perc_cpp_patronal: Number(values.perc_cpp_patronal) || 0,
+        perc_terceiros: Number(values.perc_terceiros) || 0,
+        perc_rat: Number(values.perc_rat) || 0,
         prolabore_padrao: Number(values.prolabore_padrao) || 0,
       });
       if (e2) throw e2;
