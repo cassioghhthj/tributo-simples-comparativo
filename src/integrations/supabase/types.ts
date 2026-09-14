@@ -58,6 +58,7 @@ export type Database = {
           empresa_id: string
           id: string
           mes_inicial: number
+          observacoes: string | null
         }
         Insert: {
           ano_inicial: number
@@ -67,6 +68,7 @@ export type Database = {
           empresa_id: string
           id?: string
           mes_inicial: number
+          observacoes?: string | null
         }
         Update: {
           ano_inicial?: number
@@ -76,6 +78,7 @@ export type Database = {
           empresa_id?: string
           id?: string
           mes_inicial?: number
+          observacoes?: string | null
         }
         Relationships: [
           {

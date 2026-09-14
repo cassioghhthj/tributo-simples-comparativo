@@ -1,0 +1,1 @@
+ALTER TABLE public.apuracoes ADD COLUMN IF NOT EXISTS observacoes text;
