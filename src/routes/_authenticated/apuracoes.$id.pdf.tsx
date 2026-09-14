@@ -107,8 +107,8 @@ function Kpi({
 }: {
   rotulo: string;
   valor: string;
-  nota?: string;
-  destaque?: boolean;
+  nota?: string | undefined;
+  destaque?: boolean | undefined;
 }) {
   return (
     <div

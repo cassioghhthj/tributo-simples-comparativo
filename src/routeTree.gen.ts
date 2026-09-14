@@ -17,6 +17,7 @@ import { Route as AuthenticatedApuracoesIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedApuracoesNovaRouteImport } from './routes/_authenticated/apuracoes.nova'
 import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
 import { Route as AuthenticatedEmpresasNovaRouteImport } from './routes/_authenticated/empresas.nova'
+import { Route as AuthenticatedApuracoesIdPdfRouteImport } from './routes/_authenticated/apuracoes.$id.pdf'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -60,24 +61,32 @@ const AuthenticatedEmpresasNovaRoute =
     path: '/empresas/nova',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedApuracoesIdPdfRoute =
+  AuthenticatedApuracoesIdPdfRouteImport.update({
+    id: '/pdf',
+    path: '/pdf',
+    getParentRoute: () => AuthenticatedApuracoesIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRouteWithChildren
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/apuracoes/$id/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/': typeof AuthenticatedIndexRoute
-  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/apuracoes/$id': typeof AuthenticatedApuracoesIdRouteWithChildren
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/apuracoes/$id/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -85,10 +94,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/apuracoes/$id': typeof AuthenticatedApuracoesIdRoute
+  '/_authenticated/apuracoes/$id': typeof AuthenticatedApuracoesIdRouteWithChildren
   '/_authenticated/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/_authenticated/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/_authenticated/apuracoes/$id/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/apuracoes/nova'
     | '/empresas/$id'
     | '/empresas/nova'
+    | '/apuracoes/$id/pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/apuracoes/nova'
     | '/empresas/$id'
     | '/empresas/nova'
+    | '/apuracoes/$id/pdf'
   id:
     | '__root__'
     | '/_authenticated'
@@ -119,6 +131,7 @@ export interface FileRouteTypes {
     | '/_authenticated/apuracoes/nova'
     | '/_authenticated/empresas/$id'
     | '/_authenticated/empresas/nova'
+    | '/_authenticated/apuracoes/$id/pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,12 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEmpresasNovaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/apuracoes/$id/pdf': {
+      id: '/_authenticated/apuracoes/$id/pdf'
+      path: '/pdf'
+      fullPath: '/apuracoes/$id/pdf'
+      preLoaderRoute: typeof AuthenticatedApuracoesIdPdfRouteImport
+      parentRoute: typeof AuthenticatedApuracoesIdRoute
+    }
   }
 }
 
+interface AuthenticatedApuracoesIdRouteChildren {
+  AuthenticatedApuracoesIdPdfRoute: typeof AuthenticatedApuracoesIdPdfRoute
+}
+
+const AuthenticatedApuracoesIdRouteChildren: AuthenticatedApuracoesIdRouteChildren =
+  {
+    AuthenticatedApuracoesIdPdfRoute: AuthenticatedApuracoesIdPdfRoute,
+  }
+
+const AuthenticatedApuracoesIdRouteWithChildren =
+  AuthenticatedApuracoesIdRoute._addFileChildren(
+    AuthenticatedApuracoesIdRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedApuracoesIdRoute: typeof AuthenticatedApuracoesIdRoute
+  AuthenticatedApuracoesIdRoute: typeof AuthenticatedApuracoesIdRouteWithChildren
   AuthenticatedApuracoesNovaRoute: typeof AuthenticatedApuracoesNovaRoute
   AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
   AuthenticatedEmpresasNovaRoute: typeof AuthenticatedEmpresasNovaRoute
@@ -198,7 +232,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedApuracoesIdRoute: AuthenticatedApuracoesIdRoute,
+  AuthenticatedApuracoesIdRoute: AuthenticatedApuracoesIdRouteWithChildren,
   AuthenticatedApuracoesNovaRoute: AuthenticatedApuracoesNovaRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasNovaRoute: AuthenticatedEmpresasNovaRoute,
