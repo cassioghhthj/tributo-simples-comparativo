@@ -683,6 +683,28 @@ function ApuracaoPagina() {
 
           <Card>
             <CardHeader>
+              <CardTitle>Observações do contador</CardTitle>
+              <CardDescription>
+                Texto opcional exibido no relatório em PDF, abaixo do gráfico comparativo.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea
+                rows={4}
+                placeholder="Comentários, premissas adotadas, recomendações…"
+                value={obsAtual}
+                onChange={(e) => setObservacoes(e.target.value)}
+              />
+              <div className="flex justify-end">
+                <Button onClick={() => salvarObs.mutate()} disabled={salvarObs.isPending}>
+                  {salvarObs.isPending ? "Salvando…" : "Salvar observações"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Demonstrativo mês a mês</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
