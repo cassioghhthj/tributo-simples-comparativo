@@ -168,7 +168,8 @@ export function MemoriaCalculo({ r }: { r: ResultadoMes }) {
           Faturamento: <span className="num text-foreground">{brl(f)}</span>
         </p>
         <p>
-          Folha do mês: <span className="num text-foreground">{brl(r.folha)}</span>
+          Folha do mês: <span className="num text-foreground">{brl(r.folhaAjustada)}</span>
+          <span className="block text-[10px]">(inclui pró-labore + 11% INSS)</span>
         </p>
         <p>
           RBT12: <span className="num text-foreground">{brl(r.rbt12)}</span>
