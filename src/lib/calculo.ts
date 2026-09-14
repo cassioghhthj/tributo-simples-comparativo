@@ -497,6 +497,8 @@ export function calcularApuracao(input: {
       simplesTributos: totalTributos,
       simplesTotal,
       simplesAliquota: faturamentoTotal > 0 ? (simplesTotal / faturamentoTotal) * 100 : 0,
+      simplesInssProlabore: inssProlabore,
+      simplesTotalComEncargos,
       presumido: {
         baseComercio,
         baseServico,
