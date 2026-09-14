@@ -529,108 +529,126 @@ function RelatorioPdf() {
         <Rodape pagina={1} empresa={nomeEmpresa} cnpj={cnpj} />
       </section>
 
-      {/* ---------------- Página 2 ---------------- */}
-      <section className="pdf-page">
-        <header
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            borderBottom: `2px solid ${GOLD}`,
-            paddingBottom: 8,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 14 }}>
-            <Lockup pequeno />
-            <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>Demonstrativo mês a mês</span>
-          </div>
-          <div style={{ textAlign: "right", fontSize: 8, color: "#8b8676", lineHeight: 1.5 }}>
-            <div style={{ fontWeight: 600, color: NAVY }}>{nomeEmpresa}</div>
-            <div>CNPJ {cnpj}</div>
-          </div>
-        </header>
+      {/* ---------------- Páginas 2 e 3 ---------------- */}
+      {([false, true] as const).map((comEncargos, i) => {
+        const sim = (r: (typeof resultados)[number]) =>
+          comEncargos ? r.simplesTotalComEncargos : r.simplesTotal;
+        const pre = (r: (typeof resultados)[number]) =>
+          comEncargos ? r.presumido.total : r.presumido.totalSemEncargos;
+        const accSim = comEncargos ? acumulado.simples : acumulado.simplesSem;
+        const accPre = comEncargos ? acumulado.presumido : acumulado.presumidoSem;
+        const pagina = i + 2;
+        return (
+          <section className="pdf-page" key={pagina}>
+            <header
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+                borderBottom: `2px solid ${GOLD}`,
+                paddingBottom: 8,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 14 }}>
+                <Lockup pequeno />
+                <span style={{ fontSize: 12, fontWeight: 600, color: NAVY }}>
+                  Demonstrativo mês a mês ({comEncargos ? "com encargos" : "sem encargos"})
+                </span>
+              </div>
+              <div style={{ textAlign: "right", fontSize: 8, color: "#8b8676", lineHeight: 1.5 }}>
+                <div style={{ fontWeight: 600, color: NAVY }}>{nomeEmpresa}</div>
+                <div>CNPJ {cnpj}</div>
+              </div>
+            </header>
 
-        <div className="pdf-card" style={{ marginTop: 12, overflow: "hidden" }}>
-          <table className="pdf-tbl">
-            <thead>
-              <tr>
-                <th className="l">Competência</th>
-                <th>Faturamento</th>
-                <th>RBT12</th>
-                <th>Fator R</th>
-                <th>Simples</th>
-                <th className="l">Anexo</th>
-                <th>Alíq. SN</th>
-                <th>Presumido</th>
-                <th>Alíq. LP</th>
-                <th>Diferença</th>
-              </tr>
-            </thead>
-            <tbody>
-              {resultados.map((r) => (
-                <tr key={r.competencia}>
-                  <td className="l">{r.competencia}</td>
-                  <td>{brl(r.faturamentoTotal)}</td>
-                  <td>{brl(r.rbt12)}</td>
-                  <td>{pct(r.fatorR * 100)}</td>
-                  <td>{brl(r.simplesTotal)}</td>
-                  <td className="l" style={{ whiteSpace: "nowrap" }}>
-                    {anexosDoMes(r)}
-                  </td>
-                  <td>{pct(r.simplesAliquota)}</td>
-                  <td>{brl(r.presumido.total)}</td>
-                  <td>{pct(r.presumido.aliquota)}</td>
-                  <td style={{ fontWeight: 600, color: r.economia >= 0 ? "#1f7a4c" : "#a32020" }}>
-                    {brl(r.economia)}
-                  </td>
-                </tr>
-              ))}
-              {resultados.length === 0 && (
-                <tr>
-                  <td className="l" colSpan={10}>
-                    Sem lançamentos registrados.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-            {resultados.length > 0 && (
-              <tfoot>
-                <tr style={{ background: "#eef1f8", fontWeight: 700, color: NAVY }}>
-                  <td className="l" style={{ padding: "7px 5px" }}>
-                    Acumulado
-                  </td>
-                  <td>{brl(acumulado.faturamento)}</td>
-                  <td />
-                  <td />
-                  <td>{brl(acumulado.simples)}</td>
-                  <td />
-                  <td>
-                    {pct(acumulado.faturamento > 0 ? (acumulado.simples / acumulado.faturamento) * 100 : 0)}
-                  </td>
-                  <td>{brl(acumulado.presumido)}</td>
-                  <td>
-                    {pct(
-                      acumulado.faturamento > 0 ? (acumulado.presumido / acumulado.faturamento) * 100 : 0,
-                    )}
-                  </td>
-                  <td>{brl(acumulado.presumido - acumulado.simples)}</td>
-                </tr>
-              </tfoot>
-            )}
-          </table>
-        </div>
+            <p style={{ fontSize: 8.5, color: "#7b7768", marginTop: 8, lineHeight: 1.5 }}>
+              {comEncargos
+                ? "Custo total de cada regime: o Simples Nacional soma o DAS ao INSS sobre o pró-labore; o Lucro Presumido inclui INSS sobre pró-labore, CPP patronal, Terceiros/Sistema S e RAT/SAT."
+                : "Comparação apenas dos tributos: o Simples Nacional considera o DAS e o Lucro Presumido considera IRPJ, adicional, CSLL, COFINS, PIS, ISS, ICMS e IPI, sem encargos sobre folha e pró-labore."}
+            </p>
 
-        <p style={{ fontSize: 7.5, color: "#8b8676", lineHeight: 1.6, marginTop: 8 }}>
-          RBT12: receita bruta acumulada dos 12 meses anteriores à competência, base para a alíquota
-          efetiva do Simples Nacional. Fator R: razão entre a folha dos 12 meses anteriores e o RBT12 —
-          quando igual ou superior a 28%, a receita do Anexo V é tributada pelas alíquotas do Anexo III
-          (indicado como "V → III"). Diferença: Lucro Presumido menos Simples Nacional; valores positivos
-          indicam economia com o Simples Nacional.
-        </p>
+            <div className="pdf-card" style={{ marginTop: 10, overflow: "hidden" }}>
+              <table className="pdf-tbl">
+                <thead>
+                  <tr>
+                    <th className="l">Competência</th>
+                    <th>Faturamento</th>
+                    <th>RBT12</th>
+                    <th>Fator R</th>
+                    <th>Simples</th>
+                    <th className="l">Anexo</th>
+                    <th>Alíq. SN</th>
+                    <th>Presumido</th>
+                    <th>Alíq. LP</th>
+                    <th>Diferença</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultados.map((r) => (
+                    <tr key={r.competencia}>
+                      <td className="l">{r.competencia}</td>
+                      <td>{brl(r.faturamentoTotal)}</td>
+                      <td>{brl(r.rbt12)}</td>
+                      <td>{pct(r.fatorR * 100)}</td>
+                      <td>{brl(sim(r))}</td>
+                      <td className="l" style={{ whiteSpace: "nowrap" }}>
+                        {anexosDoMes(r)}
+                      </td>
+                      <td>{pct(aliq(sim(r), r.faturamentoTotal))}</td>
+                      <td>{brl(pre(r))}</td>
+                      <td>{pct(aliq(pre(r), r.faturamentoTotal))}</td>
+                      <td
+                        style={{
+                          fontWeight: 600,
+                          color: pre(r) - sim(r) >= 0 ? "#1f7a4c" : "#a32020",
+                        }}
+                      >
+                        {brl(pre(r) - sim(r))}
+                      </td>
+                    </tr>
+                  ))}
+                  {resultados.length === 0 && (
+                    <tr>
+                      <td className="l" colSpan={10}>
+                        Sem lançamentos registrados.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+                {resultados.length > 0 && (
+                  <tfoot>
+                    <tr style={{ background: "#eef1f8", fontWeight: 700, color: NAVY }}>
+                      <td className="l" style={{ padding: "7px 5px" }}>
+                        Acumulado
+                      </td>
+                      <td>{brl(acumulado.faturamento)}</td>
+                      <td />
+                      <td />
+                      <td>{brl(accSim)}</td>
+                      <td />
+                      <td>{pct(aliq(accSim, acumulado.faturamento))}</td>
+                      <td>{brl(accPre)}</td>
+                      <td>{pct(aliq(accPre, acumulado.faturamento))}</td>
+                      <td>{brl(accPre - accSim)}</td>
+                    </tr>
+                  </tfoot>
+                )}
+              </table>
+            </div>
 
-        <div style={{ height: 12 }} />
-        <Rodape pagina={2} empresa={nomeEmpresa} cnpj={cnpj} />
-      </section>
+            <p style={{ fontSize: 7.5, color: "#8b8676", lineHeight: 1.6, marginTop: 8 }}>
+              RBT12: receita bruta acumulada dos 12 meses anteriores à competência, base para a alíquota
+              efetiva do Simples Nacional. Fator R: razão entre a folha dos 12 meses anteriores e o RBT12
+              — quando igual ou superior a 28%, a receita do Anexo V é tributada pelas alíquotas do Anexo
+              III (indicado como "V → III"). Diferença: Lucro Presumido menos Simples Nacional; valores
+              positivos indicam economia com o Simples Nacional.
+            </p>
+
+            <div style={{ height: 12 }} />
+            <Rodape pagina={pagina} empresa={nomeEmpresa} cnpj={cnpj} />
+          </section>
+        );
+      })}
     </>
   );
 }
