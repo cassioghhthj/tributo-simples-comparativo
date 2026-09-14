@@ -669,6 +669,7 @@ function ApuracaoPagina() {
                       <th className="px-3 py-2 text-right font-medium">RBT12</th>
                       <th className="px-3 py-2 text-right font-medium">Fator R</th>
                       <th className="px-3 py-2 text-right font-medium">Simples</th>
+                      <th className="px-3 py-2 font-medium">Anexo</th>
                       <th className="px-3 py-2 text-right font-medium">Alíq. SN</th>
                       <th className="px-3 py-2 text-right font-medium">Presumido</th>
                       <th className="px-3 py-2 text-right font-medium">Alíq. LP</th>
@@ -685,6 +686,12 @@ function ApuracaoPagina() {
                           <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
                           <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
                           <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
+                          <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
+                            {r.anexos
+                              .filter((a) => a.faturamento > 0)
+                              .map((a) => (a.anexo === "V" && r.fatorRAtingido ? "V → III" : a.anexo))
+                              .join(", ") || "—"}
+                          </td>
                           <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
                           <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
                           <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
@@ -710,7 +717,7 @@ function ApuracaoPagina() {
                         </tr>
                         {expandido === r.competencia && (
                           <tr className="border-b border-border/60">
-                            <td colSpan={10} className="p-0">
+                            <td colSpan={11} className="p-0">
                               <MemoriaCalculo r={r} />
                             </td>
                           </tr>
@@ -719,7 +726,7 @@ function ApuracaoPagina() {
                     ))}
                     {resultados.length === 0 && (
                       <tr>
-                        <td colSpan={10} className="px-6 py-6 text-muted-foreground">
+                        <td colSpan={11} className="px-6 py-6 text-muted-foreground">
                           Sem dados calculados.
                         </td>
                       </tr>
@@ -733,6 +740,7 @@ function ApuracaoPagina() {
                         <td className="px-3 py-3 text-right">{brl(acumulado.faturamento)}</td>
                         <td colSpan={2} />
                         <td className="px-3 py-3 text-right">{brl(acumulado.simples)}</td>
+                        <td className="px-3 py-3" />
                         <td className="px-3 py-3 text-right">
                           {pct(
                             acumulado.faturamento > 0
