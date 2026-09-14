@@ -45,7 +45,9 @@ export interface ParametrosEmpresa {
   perc_icms: number;
   perc_ipi: number;
   perc_inss_prolabore: number;
-  perc_encargo_patronal: number;
+  perc_cpp_patronal: number;
+  perc_terceiros: number;
+  perc_rat: number;
   prolabore_padrao: number;
 }
 
@@ -142,7 +144,10 @@ export interface ResultadoMes {
     icms: number;
     ipi: number;
     inssProlabore: number;
-    encargoPatronal: number;
+    cppPatronal: number;
+    terceiros: number;
+    rat: number;
+    encargosSobreFolha: number;
     total: number;
     aliquota: number;
   };
@@ -452,10 +457,13 @@ export function calcularApuracao(input: {
     const icms = (receitaComercio * num(parametros.perc_icms)) / 100;
     const ipi = (faturamentos.II * num(parametros.perc_ipi)) / 100;
     const inssProlabore = (num(parametros.prolabore_padrao) * num(parametros.perc_inss_prolabore)) / 100;
-    const encargoPatronal = (folha * num(parametros.perc_encargo_patronal)) / 100;
+    const cppPatronal = (folha * num(parametros.perc_cpp_patronal)) / 100;
+    const terceiros = (folha * num(parametros.perc_terceiros)) / 100;
+    const rat = (folha * num(parametros.perc_rat)) / 100;
+    const encargosSobreFolha = cppPatronal + terceiros + rat;
 
     const presumidoTotal =
-      irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi + inssProlabore + encargoPatronal;
+      irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi + inssProlabore + encargosSobreFolha;
 
     resultados.push({
       ano: l.ano,
@@ -485,7 +493,10 @@ export function calcularApuracao(input: {
         icms,
         ipi,
         inssProlabore,
-        encargoPatronal,
+        cppPatronal,
+        terceiros,
+        rat,
+        encargosSobreFolha,
         total: presumidoTotal,
         aliquota: faturamentoTotal > 0 ? (presumidoTotal / faturamentoTotal) * 100 : 0,
       },

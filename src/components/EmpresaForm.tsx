@@ -24,7 +24,9 @@ export interface EmpresaFormValues {
   perc_icms: string;
   perc_ipi: string;
   perc_inss_prolabore: string;
-  perc_encargo_patronal: string;
+  perc_cpp_patronal: string;
+  perc_terceiros: string;
+  perc_rat: string;
   prolabore_padrao: string;
 }
 
@@ -39,7 +41,9 @@ export const valoresPadrao: EmpresaFormValues = {
   perc_icms: "0",
   perc_ipi: "0",
   perc_inss_prolabore: "11",
-  perc_encargo_patronal: "20",
+  perc_cpp_patronal: "20",
+  perc_terceiros: "5.8",
+  perc_rat: "2",
   prolabore_padrao: "0",
 };
 
@@ -68,7 +72,24 @@ const CAMPOS_PARAM: { key: keyof EmpresaFormValues; label: string; sufixo: strin
   { key: "perc_icms", label: "ICMS no Presumido", sufixo: "%" },
   { key: "perc_ipi", label: "IPI no Presumido", sufixo: "%" },
   { key: "perc_inss_prolabore", label: "INSS sobre pró-labore", sufixo: "%" },
-  { key: "perc_encargo_patronal", label: "Encargo patronal presumido", sufixo: "%" },
+  {
+    key: "perc_cpp_patronal",
+    label: "CPP Patronal",
+    sufixo: "%",
+    ajuda: "Contribuição previdenciária patronal sobre a folha de pagamento.",
+  },
+  {
+    key: "perc_terceiros",
+    label: "Terceiros / Sistema S",
+    sufixo: "%",
+    ajuda: "Contribuições a terceiros (Sistema S). Varia conforme FPAS/CNAE.",
+  },
+  {
+    key: "perc_rat",
+    label: "RAT/SAT",
+    sufixo: "%",
+    ajuda: "Seguro acidente de trabalho. Varia conforme o grau de risco da atividade.",
+  },
   { key: "prolabore_padrao", label: "Pró-labore mensal padrão", sufixo: "R$" },
 ];
 
