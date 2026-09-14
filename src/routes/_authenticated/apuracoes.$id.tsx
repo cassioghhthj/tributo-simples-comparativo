@@ -20,6 +20,7 @@ import { mesesAnteriores } from "@/lib/calculo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -106,7 +107,9 @@ function ApuracaoPagina() {
       const [apuracao, semente, lancamentos] = await Promise.all([
         supabase
           .from("apuracoes")
-          .select("id, ano_inicial, mes_inicial, ano_tabela, descricao, empresas(nome, cnpj)")
+          .select(
+            "id, ano_inicial, mes_inicial, ano_tabela, descricao, observacoes, empresas(nome, cnpj)",
+          )
           .eq("id", id)
           .single(),
         supabase.from("apuracao_semente").select("ano, mes, rbt, folha").eq("apuracao_id", id),
