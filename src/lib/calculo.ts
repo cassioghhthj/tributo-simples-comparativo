@@ -134,6 +134,10 @@ export interface ResultadoMes {
   simplesTributos: Tributos;
   simplesTotal: number;
   simplesAliquota: number;
+  /** INSS sobre o pró-labore (não integra o DAS, mas é custo do regime). */
+  simplesInssProlabore: number;
+  /** DAS + INSS sobre pró-labore. */
+  simplesTotalComEncargos: number;
   presumido: {
     baseComercio: number;
     baseServico: number;
@@ -152,6 +156,9 @@ export interface ResultadoMes {
     encargosSobreFolha: number;
     total: number;
     aliquota: number;
+    /** Somente tributos, sem INSS pró-labore, CPP, terceiros e RAT. */
+    totalSemEncargos: number;
+    aliquotaSemEncargos: number;
   };
   economia: number;
   avisos: string[];
