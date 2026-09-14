@@ -476,8 +476,9 @@ export function calcularApuracao(input: {
     const rat = (folha * num(parametros.perc_rat)) / 100;
     const encargosSobreFolha = cppPatronal + terceiros + rat;
 
-    const presumidoTotal =
-      irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi + inssProlabore + encargosSobreFolha;
+    const presumidoSemEncargos = irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi;
+    const presumidoTotal = presumidoSemEncargos + inssProlabore + encargosSobreFolha;
+    const simplesTotalComEncargos = simplesTotal + inssProlabore;
 
     resultados.push({
       ano: l.ano,
