@@ -263,13 +263,15 @@ function RelatorioPdf() {
     cruzou.length
       ? `, ultrapassando 28% em ${cruzou.length} mês(es) — a partir de ${cruzou[0]!.competencia} a receita do Anexo V passa a ser tributada pelas alíquotas do Anexo III.`
       : ", sem ultrapassar 28% em nenhum mês do período, de modo que a receita do Anexo V manteve suas próprias alíquotas."
-  }`;
+  } Os valores acima consideram a carga total, incluindo o INSS sobre o pró-labore e os encargos sobre a folha; o comparativo apenas dos tributos está detalhado na página 2, e o comparativo com encargos na página 3.`;
+
+  const aliq = (v: number, faturamento: number) => (faturamento > 0 ? (v / faturamento) * 100 : 0);
 
   const dadosGrafico = resultados.map((r) => ({
     competencia: r.competencia,
-    "Simples Nacional": Number(r.simplesTotal.toFixed(2)),
+    "Simples Nacional": Number(r.simplesTotalComEncargos.toFixed(2)),
     "Lucro Presumido": Number(r.presumido.total.toFixed(2)),
-    "Alíq. SN": Number(r.simplesAliquota.toFixed(2)),
+    "Alíq. SN": Number(aliq(r.simplesTotalComEncargos, r.faturamentoTotal).toFixed(2)),
     "Alíq. LP": Number(r.presumido.aliquota.toFixed(2)),
   }));
 
