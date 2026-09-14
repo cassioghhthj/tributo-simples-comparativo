@@ -17,6 +17,7 @@ import { Route as AuthenticatedApuracoesIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedApuracoesNovaRouteImport } from './routes/_authenticated/apuracoes.nova'
 import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
 import { Route as AuthenticatedEmpresasNovaRouteImport } from './routes/_authenticated/empresas.nova'
+import { Route as AuthenticatedApuracoesIdPdfRouteImport } from './routes/_authenticated/apuracoes.$id_.pdf'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -60,6 +61,12 @@ const AuthenticatedEmpresasNovaRoute =
     path: '/empresas/nova',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedApuracoesIdPdfRoute =
+  AuthenticatedApuracoesIdPdfRouteImport.update({
+    id: '/apuracoes/$id_/pdf',
+    path: '/apuracoes/$id/pdf',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -69,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/apuracoes/$id/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -78,6 +86,7 @@ export interface FileRoutesByTo {
   '/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/apuracoes/$id/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +98,7 @@ export interface FileRoutesById {
   '/_authenticated/apuracoes/nova': typeof AuthenticatedApuracoesNovaRoute
   '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/_authenticated/empresas/nova': typeof AuthenticatedEmpresasNovaRoute
+  '/_authenticated/apuracoes/$id_/pdf': typeof AuthenticatedApuracoesIdPdfRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/apuracoes/nova'
     | '/empresas/$id'
     | '/empresas/nova'
+    | '/apuracoes/$id/pdf'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/apuracoes/nova'
     | '/empresas/$id'
     | '/empresas/nova'
+    | '/apuracoes/$id/pdf'
   id:
     | '__root__'
     | '/_authenticated'
@@ -119,6 +131,7 @@ export interface FileRouteTypes {
     | '/_authenticated/apuracoes/nova'
     | '/_authenticated/empresas/$id'
     | '/_authenticated/empresas/nova'
+    | '/_authenticated/apuracoes/$id_/pdf'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEmpresasNovaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/apuracoes/$id_/pdf': {
+      id: '/_authenticated/apuracoes/$id_/pdf'
+      path: '/apuracoes/$id/pdf'
+      fullPath: '/apuracoes/$id/pdf'
+      preLoaderRoute: typeof AuthenticatedApuracoesIdPdfRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -194,6 +214,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedApuracoesNovaRoute: typeof AuthenticatedApuracoesNovaRoute
   AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
   AuthenticatedEmpresasNovaRoute: typeof AuthenticatedEmpresasNovaRoute
+  AuthenticatedApuracoesIdPdfRoute: typeof AuthenticatedApuracoesIdPdfRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -202,6 +223,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApuracoesNovaRoute: AuthenticatedApuracoesNovaRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasNovaRoute: AuthenticatedEmpresasNovaRoute,
+  AuthenticatedApuracoesIdPdfRoute: AuthenticatedApuracoesIdPdfRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

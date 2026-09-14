@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -20,6 +20,7 @@ import { mesesAnteriores } from "@/lib/calculo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -98,6 +99,7 @@ const formVazio: Form = {
 function ApuracaoPagina() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
+  const navigate = useNavigate();
 
   const base = useQuery({
     queryKey: ["apuracao-base", id],
@@ -105,7 +107,9 @@ function ApuracaoPagina() {
       const [apuracao, semente, lancamentos] = await Promise.all([
         supabase
           .from("apuracoes")
-          .select("id, ano_inicial, mes_inicial, ano_tabela, descricao, empresas(nome, cnpj)")
+          .select(
+            "id, ano_inicial, mes_inicial, ano_tabela, descricao, observacoes, empresas(nome, cnpj)",
+          )
           .eq("id", id)
           .single(),
         supabase.from("apuracao_semente").select("ano, mes, rbt, folha").eq("apuracao_id", id),
@@ -142,6 +146,8 @@ function ApuracaoPagina() {
   const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
   const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
   const prefillRef = useRef<string | null>(null);
+  const [observacoes, setObservacoes] = useState<string | null>(null);
+  const obsAtual = observacoes ?? base.data?.apuracao.observacoes ?? "";
 
   const ultimoLancamento = base.data?.lancamentos.at(-1) ?? null;
   const apuracaoCompleta = (base.data?.lancamentos.length ?? 0) >= 12;
@@ -268,6 +274,21 @@ function ApuracaoPagina() {
       await qc.invalidateQueries({ queryKey: ["apuracao-base", id] });
       await qc.invalidateQueries({ queryKey: ["apuracao-calculo", id] });
     },
+  });
+
+  const salvarObs = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("apuracoes")
+        .update({ observacoes: obsAtual.trim() === "" ? null : obsAtual })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      toast.success("Observações salvas.");
+      await qc.invalidateQueries({ queryKey: ["apuracao-base", id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const resultados = calculo.data?.resultados ?? [];
@@ -562,6 +583,11 @@ function ApuracaoPagina() {
         </TabsContent>
 
         <TabsContent value="relatorio" className="space-y-6 pt-4">
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => navigate({ to: "/apuracoes/$id/pdf", params: { id } })}>
+              Exportar PDF
+            </Button>
+          </div>
           <div className="grid gap-4 md:grid-cols-4">
             <Indicador titulo="Faturamento acumulado" valor={brl(acumulado.faturamento)} />
             <Indicador
@@ -652,6 +678,28 @@ function ApuracaoPagina() {
                   </ComposedChart>
                 </ResponsiveContainer>
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Observações do contador</CardTitle>
+              <CardDescription>
+                Texto opcional exibido no relatório em PDF, abaixo do gráfico comparativo.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea
+                rows={4}
+                placeholder="Comentários, premissas adotadas, recomendações…"
+                value={obsAtual}
+                onChange={(e) => setObservacoes(e.target.value)}
+              />
+              <div className="flex justify-end">
+                <Button onClick={() => salvarObs.mutate()} disabled={salvarObs.isPending}>
+                  {salvarObs.isPending ? "Salvando…" : "Salvar observações"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
