@@ -143,6 +143,7 @@ function ApuracaoPagina() {
   const [form, setForm] = useState<Form>(formVazio);
   const [isencoesAbertas, setIsencoesAbertas] = useState(false);
   const [expandido, setExpandido] = useState<string | null>(null);
+  const [visao, setVisao] = useState<"sem" | "com">("sem");
   const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
   const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
   const prefillRef = useRef<string | null>(null);
@@ -299,6 +300,19 @@ function ApuracaoPagina() {
       presumido: acc.presumido + r.presumido.total,
     }),
     { faturamento: 0, simples: 0, presumido: 0 },
+  );
+
+  const comEncargos = visao === "com";
+  const simplesDe = (r: (typeof resultados)[number]) =>
+    comEncargos ? r.simplesTotalComEncargos : r.simplesTotal;
+  const presumidoDe = (r: (typeof resultados)[number]) =>
+    comEncargos ? r.presumido.total : r.presumido.totalSemEncargos;
+  const acumuladoVisao = resultados.reduce(
+    (acc, r) => ({
+      simples: acc.simples + simplesDe(r),
+      presumido: acc.presumido + presumidoDe(r),
+    }),
+    { simples: 0, presumido: 0 },
   );
 
   const empresa = base.data?.apuracao.empresas as { nome: string; cnpj: string | null } | null;
