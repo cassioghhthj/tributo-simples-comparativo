@@ -214,7 +214,10 @@ export function MemoriaCalculo({ r }: { r: ResultadoMes }) {
               { label: "ICMS", valor: p.icms },
               { label: "IPI", valor: p.ipi },
               { label: "INSS sobre pró-labore", valor: p.inssProlabore },
-              { label: "Encargo patronal (folha)", valor: p.encargoPatronal },
+              { label: "CPP Patronal (folha)", valor: p.cppPatronal },
+              { label: "Terceiros / Sistema S (folha)", valor: p.terceiros },
+              { label: "RAT/SAT (folha)", valor: p.rat },
+              { label: "Encargos sobre folha (subtotal)", valor: p.encargosSobreFolha },
             ]}
           />
         </div>

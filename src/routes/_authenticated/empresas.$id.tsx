@@ -63,7 +63,9 @@ function EditarEmpresa() {
       perc_icms: String(parametros?.perc_icms ?? valoresPadrao.perc_icms),
       perc_ipi: String(parametros?.perc_ipi ?? valoresPadrao.perc_ipi),
       perc_inss_prolabore: String(parametros?.perc_inss_prolabore ?? valoresPadrao.perc_inss_prolabore),
-      perc_encargo_patronal: String(parametros?.perc_encargo_patronal ?? valoresPadrao.perc_encargo_patronal),
+      perc_cpp_patronal: String(parametros?.perc_cpp_patronal ?? valoresPadrao.perc_cpp_patronal),
+      perc_terceiros: String(parametros?.perc_terceiros ?? valoresPadrao.perc_terceiros),
+      perc_rat: String(parametros?.perc_rat ?? valoresPadrao.perc_rat),
       prolabore_padrao: String(parametros?.prolabore_padrao ?? valoresPadrao.prolabore_padrao),
     });
   }, [dados.data]);
@@ -90,7 +92,9 @@ function EditarEmpresa() {
           perc_icms: Number(values.perc_icms) || 0,
           perc_ipi: Number(values.perc_ipi) || 0,
           perc_inss_prolabore: Number(values.perc_inss_prolabore) || 0,
-          perc_encargo_patronal: Number(values.perc_encargo_patronal) || 0,
+          perc_cpp_patronal: Number(values.perc_cpp_patronal) || 0,
+          perc_terceiros: Number(values.perc_terceiros) || 0,
+          perc_rat: Number(values.perc_rat) || 0,
           prolabore_padrao: Number(values.prolabore_padrao) || 0,
         },
         { onConflict: "empresa_id" },
