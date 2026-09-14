@@ -517,6 +517,9 @@ export function calcularApuracao(input: {
         encargosSobreFolha,
         total: presumidoTotal,
         aliquota: faturamentoTotal > 0 ? (presumidoTotal / faturamentoTotal) * 100 : 0,
+        totalSemEncargos: presumidoSemEncargos,
+        aliquotaSemEncargos:
+          faturamentoTotal > 0 ? (presumidoSemEncargos / faturamentoTotal) * 100 : 0,
       },
       economia: presumidoTotal - simplesTotal,
       avisos: [...new Set(avisos)],
