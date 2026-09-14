@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { MemoriaCalculo } from "@/components/MemoriaCalculo";
+import { EditarSemente } from "@/components/EditarSemente";
 import { MESES, brl, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
