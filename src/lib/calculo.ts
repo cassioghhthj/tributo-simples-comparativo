@@ -134,6 +134,10 @@ export interface ResultadoMes {
   simplesTributos: Tributos;
   simplesTotal: number;
   simplesAliquota: number;
+  /** INSS sobre o pró-labore (não integra o DAS, mas é custo do regime). */
+  simplesInssProlabore: number;
+  /** DAS + INSS sobre pró-labore. */
+  simplesTotalComEncargos: number;
   presumido: {
     baseComercio: number;
     baseServico: number;
@@ -152,6 +156,9 @@ export interface ResultadoMes {
     encargosSobreFolha: number;
     total: number;
     aliquota: number;
+    /** Somente tributos, sem INSS pró-labore, CPP, terceiros e RAT. */
+    totalSemEncargos: number;
+    aliquotaSemEncargos: number;
   };
   economia: number;
   avisos: string[];
@@ -469,8 +476,9 @@ export function calcularApuracao(input: {
     const rat = (folha * num(parametros.perc_rat)) / 100;
     const encargosSobreFolha = cppPatronal + terceiros + rat;
 
-    const presumidoTotal =
-      irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi + inssProlabore + encargosSobreFolha;
+    const presumidoSemEncargos = irpj + adicionalIrpj + csll + cofins + pis + iss + icms + ipi;
+    const presumidoTotal = presumidoSemEncargos + inssProlabore + encargosSobreFolha;
+    const simplesTotalComEncargos = simplesTotal + inssProlabore;
 
     resultados.push({
       ano: l.ano,
@@ -489,6 +497,8 @@ export function calcularApuracao(input: {
       simplesTributos: totalTributos,
       simplesTotal,
       simplesAliquota: faturamentoTotal > 0 ? (simplesTotal / faturamentoTotal) * 100 : 0,
+      simplesInssProlabore: inssProlabore,
+      simplesTotalComEncargos,
       presumido: {
         baseComercio,
         baseServico,
@@ -507,6 +517,9 @@ export function calcularApuracao(input: {
         encargosSobreFolha,
         total: presumidoTotal,
         aliquota: faturamentoTotal > 0 ? (presumidoTotal / faturamentoTotal) * 100 : 0,
+        totalSemEncargos: presumidoSemEncargos,
+        aliquotaSemEncargos:
+          faturamentoTotal > 0 ? (presumidoSemEncargos / faturamentoTotal) * 100 : 0,
       },
       economia: presumidoTotal - simplesTotal,
       avisos: [...new Set(avisos)],

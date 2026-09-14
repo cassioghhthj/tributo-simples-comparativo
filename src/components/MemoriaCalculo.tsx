@@ -201,6 +201,29 @@ export function MemoriaCalculo({ r }: { r: ResultadoMes }) {
             total={r.simplesTotal}
             linhas={ROTULOS.map(({ key, label }) => ({ label, valor: r.simplesTributos[key] }))}
           />
+
+          <div className="mt-4">
+            <Cabecalho titulo="Encargos" />
+            <table className="w-full text-sm">
+              <tbody>
+                <LinhaTabela
+                  label="INSS sobre pró-labore"
+                  detalhe="11% × pró-labore padrão (fora do DAS)"
+                  valor={r.simplesInssProlabore}
+                  faturamento={f}
+                />
+              </tbody>
+              <tfoot>
+                <tr className="font-semibold">
+                  <td className="py-2">Total com encargos</td>
+                  <td className="num py-2 text-right">{brl(r.simplesTotalComEncargos)}</td>
+                  <td className="num py-2 text-right">
+                    {pct(f > 0 ? (r.simplesTotalComEncargos / f) * 100 : 0, 4)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
 
         <div>

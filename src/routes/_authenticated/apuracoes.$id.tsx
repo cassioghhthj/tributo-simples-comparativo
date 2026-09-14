@@ -143,6 +143,7 @@ function ApuracaoPagina() {
   const [form, setForm] = useState<Form>(formVazio);
   const [isencoesAbertas, setIsencoesAbertas] = useState(false);
   const [expandido, setExpandido] = useState<string | null>(null);
+  const [visao, setVisao] = useState<"sem" | "com">("sem");
   const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
   const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
   const prefillRef = useRef<string | null>(null);
@@ -299,6 +300,19 @@ function ApuracaoPagina() {
       presumido: acc.presumido + r.presumido.total,
     }),
     { faturamento: 0, simples: 0, presumido: 0 },
+  );
+
+  const comEncargos = visao === "com";
+  const simplesDe = (r: (typeof resultados)[number]) =>
+    comEncargos ? r.simplesTotalComEncargos : r.simplesTotal;
+  const presumidoDe = (r: (typeof resultados)[number]) =>
+    comEncargos ? r.presumido.total : r.presumido.totalSemEncargos;
+  const acumuladoVisao = resultados.reduce(
+    (acc, r) => ({
+      simples: acc.simples + simplesDe(r),
+      presumido: acc.presumido + presumidoDe(r),
+    }),
+    { simples: 0, presumido: 0 },
   );
 
   const empresa = base.data?.apuracao.empresas as { nome: string; cnpj: string | null } | null;
@@ -704,8 +718,19 @@ function ApuracaoPagina() {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="gap-3">
               <CardTitle>Demonstrativo mês a mês</CardTitle>
+              <CardDescription>
+                {comEncargos
+                  ? "Simples com INSS sobre pró-labore e Lucro Presumido com todos os encargos sobre folha."
+                  : "Comparação apenas dos tributos, sem INSS sobre pró-labore e sem encargos sobre folha."}
+              </CardDescription>
+              <Tabs value={visao} onValueChange={(v) => setVisao(v as "sem" | "com")}>
+                <TabsList>
+                  <TabsTrigger value="sem">Sem encargos</TabsTrigger>
+                  <TabsTrigger value="com">Com encargos</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -733,22 +758,34 @@ function ApuracaoPagina() {
                           <td className="px-3 py-2 text-right">{brl(r.faturamentoTotal)}</td>
                           <td className="px-3 py-2 text-right">{brl(r.rbt12)}</td>
                           <td className="px-3 py-2 text-right">{pct(r.fatorR * 100)}</td>
-                          <td className="px-3 py-2 text-right">{brl(r.simplesTotal)}</td>
+                          <td className="px-3 py-2 text-right">{brl(simplesDe(r))}</td>
                           <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
                             {r.anexos
                               .filter((a) => a.faturamento > 0)
                               .map((a) => (a.anexo === "V" && r.fatorRAtingido ? "V → III" : a.anexo))
                               .join(", ") || "—"}
                           </td>
-                          <td className="px-3 py-2 text-right">{pct(r.simplesAliquota)}</td>
-                          <td className="px-3 py-2 text-right">{brl(r.presumido.total)}</td>
-                          <td className="px-3 py-2 text-right">{pct(r.presumido.aliquota)}</td>
+                          <td className="px-3 py-2 text-right">
+                            {pct(
+                              r.faturamentoTotal > 0
+                                ? (simplesDe(r) / r.faturamentoTotal) * 100
+                                : 0,
+                            )}
+                          </td>
+                          <td className="px-3 py-2 text-right">{brl(presumidoDe(r))}</td>
+                          <td className="px-3 py-2 text-right">
+                            {pct(
+                              r.faturamentoTotal > 0
+                                ? (presumidoDe(r) / r.faturamentoTotal) * 100
+                                : 0,
+                            )}
+                          </td>
                           <td
                             className={`px-3 py-2 text-right font-medium ${
-                              r.economia >= 0 ? "text-success" : "text-destructive"
+                              presumidoDe(r) - simplesDe(r) >= 0 ? "text-success" : "text-destructive"
                             }`}
                           >
-                            {brl(r.economia)}
+                            {brl(presumidoDe(r) - simplesDe(r))}
                           </td>
                           <td className="px-6 py-2 text-right">
                             <Button
@@ -787,25 +824,25 @@ function ApuracaoPagina() {
                         <td className="px-6 py-3">Acumulado</td>
                         <td className="px-3 py-3 text-right">{brl(acumulado.faturamento)}</td>
                         <td colSpan={2} />
-                        <td className="px-3 py-3 text-right">{brl(acumulado.simples)}</td>
+                        <td className="px-3 py-3 text-right">{brl(acumuladoVisao.simples)}</td>
                         <td className="px-3 py-3" />
                         <td className="px-3 py-3 text-right">
                           {pct(
                             acumulado.faturamento > 0
-                              ? (acumulado.simples / acumulado.faturamento) * 100
+                              ? (acumuladoVisao.simples / acumulado.faturamento) * 100
                               : 0,
                           )}
                         </td>
-                        <td className="px-3 py-3 text-right">{brl(acumulado.presumido)}</td>
+                        <td className="px-3 py-3 text-right">{brl(acumuladoVisao.presumido)}</td>
                         <td className="px-3 py-3 text-right">
                           {pct(
                             acumulado.faturamento > 0
-                              ? (acumulado.presumido / acumulado.faturamento) * 100
+                              ? (acumuladoVisao.presumido / acumulado.faturamento) * 100
                               : 0,
                           )}
                         </td>
                         <td className="px-3 py-3 text-right">
-                          {brl(acumulado.presumido - acumulado.simples)}
+                          {brl(acumuladoVisao.presumido - acumuladoVisao.simples)}
                         </td>
                         <td className="px-6 py-3" />
                       </tr>
