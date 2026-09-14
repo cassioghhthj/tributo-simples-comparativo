@@ -146,6 +146,8 @@ function ApuracaoPagina() {
   const [sugestaoDe, setSugestaoDe] = useState<string | null>(null);
   const [camposSugeridos, setCamposSugeridos] = useState<string[]>([]);
   const prefillRef = useRef<string | null>(null);
+  const [observacoes, setObservacoes] = useState<string | null>(null);
+  const obsAtual = observacoes ?? base.data?.apuracao.observacoes ?? "";
 
   const ultimoLancamento = base.data?.lancamentos.at(-1) ?? null;
   const apuracaoCompleta = (base.data?.lancamentos.length ?? 0) >= 12;
@@ -272,6 +274,21 @@ function ApuracaoPagina() {
       await qc.invalidateQueries({ queryKey: ["apuracao-base", id] });
       await qc.invalidateQueries({ queryKey: ["apuracao-calculo", id] });
     },
+  });
+
+  const salvarObs = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("apuracoes")
+        .update({ observacoes: obsAtual.trim() === "" ? null : obsAtual })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      toast.success("Observações salvas.");
+      await qc.invalidateQueries({ queryKey: ["apuracao-base", id] });
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const resultados = calculo.data?.resultados ?? [];
