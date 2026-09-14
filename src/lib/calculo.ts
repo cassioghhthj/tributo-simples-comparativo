@@ -463,7 +463,8 @@ export function calcularApuracao(input: {
     const icms = (receitaComercio * num(parametros.perc_icms)) / 100;
     const ipi = (faturamentos.II * num(parametros.perc_ipi)) / 100;
     const inssProlabore = (num(parametros.prolabore_padrao) * num(parametros.perc_inss_prolabore)) / 100;
-    const cppPatronal = (folha * num(parametros.perc_cpp_patronal)) / 100;
+    // CPP Patronal incide sobre folha + pró-labore (LC 123: base previdenciária inclui pró-labore).
+    const cppPatronal = ((folha + num(parametros.prolabore_padrao)) * num(parametros.perc_cpp_patronal)) / 100;
     const terceiros = (folha * num(parametros.perc_terceiros)) / 100;
     const rat = (folha * num(parametros.perc_rat)) / 100;
     const encargosSobreFolha = cppPatronal + terceiros + rat;
