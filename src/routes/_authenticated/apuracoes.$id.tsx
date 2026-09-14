@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { MemoriaCalculo } from "@/components/MemoriaCalculo";
+import { EditarSemente } from "@/components/EditarSemente";
 import { MESES, brl, pct } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/apuracoes/$id")({
@@ -318,6 +319,24 @@ function ApuracaoPagina() {
         </TabsList>
 
         <TabsContent value="lancamento" className="space-y-6 pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">
+              Base do RBT12: 12 meses anteriores a{" "}
+              <span className="num">
+                {String(base.data?.apuracao.mes_inicial).padStart(2, "0")}/
+                {base.data?.apuracao.ano_inicial}
+              </span>
+            </p>
+            {base.data && (
+              <EditarSemente
+                apuracaoId={id}
+                anoInicial={base.data.apuracao.ano_inicial}
+                mesInicial={base.data.apuracao.mes_inicial}
+                semente={base.data.semente}
+                totalLancamentos={base.data.lancamentos.length}
+              />
+            )}
+          </div>
           <div className="grid gap-4 md:grid-cols-3">
             <Indicador titulo="RBT12 (12 meses anteriores)" valor={brl(previa.rbt12)} />
             <Indicador titulo="Folha 12 meses" valor={brl(previa.folha12)} />
