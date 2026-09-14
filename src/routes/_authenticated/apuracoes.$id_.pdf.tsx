@@ -412,7 +412,7 @@ function RelatorioPdf() {
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
           <Kpi rotulo="Faturamento acumulado" valor={brl(acumulado.faturamento)} nota={`${resultados.length} competência(s)`} />
           <Kpi
-            rotulo="Simples Nacional"
+            rotulo="Simples Nacional (com encargos)"
             valor={brl(acumulado.simples)}
             nota={
               acumulado.faturamento > 0
@@ -422,7 +422,7 @@ function RelatorioPdf() {
             destaque={simplesMelhor}
           />
           <Kpi
-            rotulo="Lucro Presumido"
+            rotulo="Lucro Presumido (com encargos)"
             valor={brl(acumulado.presumido)}
             nota={
               acumulado.faturamento > 0
@@ -467,7 +467,7 @@ function RelatorioPdf() {
 
         <div className="pdf-card" style={{ marginTop: 12, padding: "10px 12px" }}>
           <div style={{ fontSize: 10, fontWeight: 700, color: NAVY, marginBottom: 4 }}>
-            Comparativo de carga tributária
+            Comparativo de carga tributária (com encargos)
           </div>
           <ComposedChart
             width={650}
