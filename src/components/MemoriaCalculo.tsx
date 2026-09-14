@@ -163,9 +163,12 @@ export function MemoriaCalculo({ r }: { r: ResultadoMes }) {
 
   return (
     <div className="space-y-6 bg-muted/30 px-6 py-5">
-      <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-4">
+      <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-5">
         <p>
           Faturamento: <span className="num text-foreground">{brl(f)}</span>
+        </p>
+        <p>
+          Folha do mês: <span className="num text-foreground">{brl(r.folha)}</span>
         </p>
         <p>
           RBT12: <span className="num text-foreground">{brl(r.rbt12)}</span>
