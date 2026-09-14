@@ -824,25 +824,25 @@ function ApuracaoPagina() {
                         <td className="px-6 py-3">Acumulado</td>
                         <td className="px-3 py-3 text-right">{brl(acumulado.faturamento)}</td>
                         <td colSpan={2} />
-                        <td className="px-3 py-3 text-right">{brl(acumulado.simples)}</td>
+                        <td className="px-3 py-3 text-right">{brl(acumuladoVisao.simples)}</td>
                         <td className="px-3 py-3" />
                         <td className="px-3 py-3 text-right">
                           {pct(
                             acumulado.faturamento > 0
-                              ? (acumulado.simples / acumulado.faturamento) * 100
+                              ? (acumuladoVisao.simples / acumulado.faturamento) * 100
                               : 0,
                           )}
                         </td>
-                        <td className="px-3 py-3 text-right">{brl(acumulado.presumido)}</td>
+                        <td className="px-3 py-3 text-right">{brl(acumuladoVisao.presumido)}</td>
                         <td className="px-3 py-3 text-right">
                           {pct(
                             acumulado.faturamento > 0
-                              ? (acumulado.presumido / acumulado.faturamento) * 100
+                              ? (acumuladoVisao.presumido / acumulado.faturamento) * 100
                               : 0,
                           )}
                         </td>
                         <td className="px-3 py-3 text-right">
-                          {brl(acumulado.presumido - acumulado.simples)}
+                          {brl(acumuladoVisao.presumido - acumuladoVisao.simples)}
                         </td>
                         <td className="px-6 py-3" />
                       </tr>
