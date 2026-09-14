@@ -187,6 +187,7 @@ export type Database = {
           created_at: string
           empresa_id: string
           id: string
+          perc_cpp_patronal: number
           perc_encargo_patronal: number
           perc_icms: number
           perc_inss_prolabore: number
@@ -194,6 +195,8 @@ export type Database = {
           perc_iss: number
           perc_presuncao_comercio: number
           perc_presuncao_servico: number
+          perc_rat: number
+          perc_terceiros: number
           prolabore_padrao: number
           updated_at: string
         }
@@ -201,6 +204,7 @@ export type Database = {
           created_at?: string
           empresa_id: string
           id?: string
+          perc_cpp_patronal?: number
           perc_encargo_patronal?: number
           perc_icms?: number
           perc_inss_prolabore?: number
@@ -208,6 +212,8 @@ export type Database = {
           perc_iss?: number
           perc_presuncao_comercio?: number
           perc_presuncao_servico?: number
+          perc_rat?: number
+          perc_terceiros?: number
           prolabore_padrao?: number
           updated_at?: string
         }
@@ -215,6 +221,7 @@ export type Database = {
           created_at?: string
           empresa_id?: string
           id?: string
+          perc_cpp_patronal?: number
           perc_encargo_patronal?: number
           perc_icms?: number
           perc_inss_prolabore?: number
@@ -222,6 +229,8 @@ export type Database = {
           perc_iss?: number
           perc_presuncao_comercio?: number
           perc_presuncao_servico?: number
+          perc_rat?: number
+          perc_terceiros?: number
           prolabore_padrao?: number
           updated_at?: string
         }
