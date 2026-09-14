@@ -718,8 +718,19 @@ function ApuracaoPagina() {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="gap-3">
               <CardTitle>Demonstrativo mês a mês</CardTitle>
+              <CardDescription>
+                {comEncargos
+                  ? "Simples com INSS sobre pró-labore e Lucro Presumido com todos os encargos sobre folha."
+                  : "Comparação apenas dos tributos, sem INSS sobre pró-labore e sem encargos sobre folha."}
+              </CardDescription>
+              <Tabs value={visao} onValueChange={(v) => setVisao(v as "sem" | "com")}>
+                <TabsList>
+                  <TabsTrigger value="sem">Sem encargos</TabsTrigger>
+                  <TabsTrigger value="com">Com encargos</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </CardHeader>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
