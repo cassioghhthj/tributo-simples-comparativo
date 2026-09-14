@@ -76,7 +76,7 @@ const CAMPOS_PARAM: { key: keyof EmpresaFormValues; label: string; sufixo: strin
     key: "perc_cpp_patronal",
     label: "CPP Patronal",
     sufixo: "%",
-    ajuda: "Contribuição previdenciária patronal sobre a folha de pagamento.",
+    ajuda: "Contribuição previdenciária patronal sobre a folha + pró-labore.",
   },
   {
     key: "perc_terceiros",
