@@ -228,10 +228,12 @@ function RelatorioPdf() {
   const acumulado = resultados.reduce(
     (acc, r) => ({
       faturamento: acc.faturamento + r.faturamentoTotal,
-      simples: acc.simples + r.simplesTotal,
+      simples: acc.simples + r.simplesTotalComEncargos,
       presumido: acc.presumido + r.presumido.total,
+      simplesSem: acc.simplesSem + r.simplesTotal,
+      presumidoSem: acc.presumidoSem + r.presumido.totalSemEncargos,
     }),
-    { faturamento: 0, simples: 0, presumido: 0 },
+    { faturamento: 0, simples: 0, presumido: 0, simplesSem: 0, presumidoSem: 0 },
   );
 
   const simplesMelhor = acumulado.simples <= acumulado.presumido;
