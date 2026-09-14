@@ -122,6 +122,8 @@ export interface ResultadoMes {
   competencia: string;
   faturamentoTotal: number;
   folha: number;
+  /** Folha do mês ajustada: (folha + pró-labore) x (1 + INSS pró-labore %). Base do Fator R. */
+  folhaAjustada: number;
   rbt12: number;
   folha12: number;
   fatorR: number;
@@ -311,6 +313,10 @@ export function calcularApuracao(input: {
     };
     const faturamentoTotal = Object.values(faturamentos).reduce((a, b) => a + b, 0);
     const folha = num(l.folha);
+    // LC 123 art. 18 §24: folha de salários incluídos encargos (pró-labore + INSS).
+    // Aplica-se apenas a lançamentos reais; a semente já vem ajustada pelo usuário.
+    const folhaAjustada =
+      (folha + num(parametros.prolabore_padrao)) * (1 + num(parametros.perc_inss_prolabore) / 100);
 
     const janela = mesesAnteriores(l.ano, l.mes, 12);
     let rbt12 = 0;
@@ -471,6 +477,7 @@ export function calcularApuracao(input: {
       competencia: `${String(l.mes).padStart(2, "0")}/${l.ano}`,
       faturamentoTotal,
       folha,
+      folhaAjustada,
       rbt12,
       folha12,
       fatorR,
@@ -504,7 +511,7 @@ export function calcularApuracao(input: {
       avisos: [...new Set(avisos)],
     });
 
-    historico.set(chave(l.ano, l.mes), { rbt: faturamentoTotal, folha });
+    historico.set(chave(l.ano, l.mes), { rbt: faturamentoTotal, folha: folhaAjustada });
   }
 
   return resultados;
